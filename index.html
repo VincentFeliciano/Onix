@@ -100,10 +100,33 @@
             padding-top: max(12px, env(safe-area-inset-top));
             display: flex;
             align-items: center;
+            justify-content: space-between;
             box-shadow: var(--elevation-4);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .app-bar-back-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--md-primary);
+            color: #000000;
+            border: none;
+            border-radius: 12px;
+            font-size: 24px;
+            box-shadow: var(--elevation-2);
+            z-index: 110;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), background 0.2s;
+            cursor: pointer;
+        }
+
+        .app-bar-back-btn:active {
+            transform: scale(0.95);
         }
 
         .logo {
@@ -584,40 +607,6 @@
         .mb-1 { margin-bottom: 8px; }
         .mb-2 { margin-bottom: 16px; }
 
-        .sticky-header {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            background: var(--md-background);
-            padding: 0 0 12px 0;
-            margin-bottom: 16px;
-            z-index: 50;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--md-primary);
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            letter-spacing: 0.25px;
-        }
-
-        .back-btn:active {
-            opacity: 0.7;
-        }
-
         .vehicle-detail-header {
             background: var(--md-surface-2dp);
             padding: var(--spacing-md);
@@ -847,6 +836,9 @@
                 <path d="M14.5046 7.22942L22.7508 11.83V21.031L14.5046 25.6316L6.25836 21.031V11.83L14.5046 7.22942Z" fill="#272727"/>
                 <path d="M14.5045 25.6316V7.22942L22.7511 11.4603V21.031L14.5045 25.6316Z" fill="black"/>
             </svg>
+            <button id="backBtn" class="app-bar-back-btn" onclick="handleBack()" style="display: none;">
+                <span class="material-icons">arrow_back</span>
+            </button>
         </div>
 
         <div id="content" class="content"></div>
@@ -1260,6 +1252,7 @@
         const store = new Store();
 
         function renderGarage() {
+            document.getElementById('backBtn').style.display = 'none';
             const content = document.getElementById('content');
             
             if (store.vehicles.length === 0) {
@@ -1306,6 +1299,7 @@
         function showVehicleDetail(vehicleId) {
             store.currentVehicle = vehicleId;
             store.currentProject = null;
+            document.getElementById('backBtn').style.display = 'flex';
             const vehicle = store.getVehicleById(vehicleId);
             const projects = store.sortProjects(store.getProjectsByVehicle(vehicleId));
             const content = document.getElementById('content');
@@ -1378,9 +1372,6 @@
             `;
             
             content.innerHTML = `
-                <div class="sticky-header">
-                    <button class="back-btn" onclick="backToGarage()"><span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to Garage</button>
-                </div>
                 <div class="vehicle-detail-header">
                     <div class="vehicle-profile-image">
                         ${vehicle.profileImage ? `<img src="${vehicle.profileImage}" alt="Vehicle">` : '<span class="material-icons" style="font-size: 80px; color: var(--md-text-medium);">directions_car</span>'}
@@ -1489,12 +1480,6 @@
             };
             
             content.innerHTML = `
-                <div class="sticky-header">
-                    <button class="back-btn" onclick="backToVehicle()">
-                        <span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to ${vehicle.year} ${vehicle.make} ${vehicle.model}
-                    </button>
-                </div>
-                
                 <div class="vehicle-detail-header">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                         <div style="flex: 1;">
@@ -1804,13 +1789,23 @@
             openModal('partModal');
         }
 
+        function handleBack() {
+            if (store.currentProject) {
+                backToVehicle();
+            } else if (store.currentVehicle) {
+                backToGarage();
+            }
+        }
+
         function backToGarage() {
             store.currentVehicle = null;
             store.currentProject = null;
+            document.getElementById('backBtn').style.display = 'none';
             renderGarage();
         }
 
         function renderProjects() {
+            document.getElementById('backBtn').style.display = 'none';
             const content = document.getElementById('content');
             
             if (store.projects.length === 0) {
@@ -1879,6 +1874,7 @@
         }
 
         function renderProfile() {
+            document.getElementById('backBtn').style.display = 'none';
             const totalExpenses = store.vehicles.reduce((sum, v) => sum + (v.totalExpenses || 0), 0);
             const content = document.getElementById('content');
             content.innerHTML = `
