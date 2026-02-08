@@ -15,6 +15,12 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        /* iOS-specific optimizations */
+        button, a, select, input, textarea {
+            touch-action: manipulation;
         }
 
         :root {
@@ -108,7 +114,7 @@
         .content {
             flex: 1;
             padding: var(--spacing-md);
-            padding-bottom: calc(88px + env(safe-area-inset-bottom));
+            padding-bottom: calc(96px + env(safe-area-inset-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             background: var(--md-background);
@@ -335,7 +341,7 @@
 
         .fab {
             position: fixed;
-            bottom: calc(88px + env(safe-area-inset-bottom));
+            bottom: calc(96px + env(safe-area-inset-bottom));
             right: 16px;
             width: 56px;
             height: 56px;
@@ -368,11 +374,11 @@
             right: 0;
             background: var(--md-surface-8dp);
             display: flex;
-            padding: 8px 0;
-            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            padding: 12px 0;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
             box-shadow: var(--elevation-8);
             z-index: 100;
-            height: calc(56px + env(safe-area-inset-bottom));
+            height: calc(64px + env(safe-area-inset-bottom));
         }
 
         .nav-btn {
@@ -500,6 +506,21 @@
             background: var(--md-surface-8dp);
             color: var(--md-text-high);
             transition: border-color 0.2s, background 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        /* iOS-specific fixes for select elements */
+        .form-select {
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="rgba(255,255,255,0.6)" d="M6 9L1 4h10z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        /* Ensure readonly selects still look interactive but can't be changed */
+        .form-select[readonly] {
+            pointer-events: none;
         }
 
         .form-input:focus,
@@ -530,7 +551,7 @@
 
         .toast {
             position: fixed;
-            bottom: calc(140px + env(safe-area-inset-bottom));
+            bottom: calc(148px + env(safe-area-inset-bottom));
             left: 16px;
             right: 16px;
             background: var(--md-surface-24dp);
@@ -953,6 +974,8 @@
                 this.currentVehicle = null;
                 this.currentProject = null;
                 this.sortBy = 'priority';
+                this.editingVehicle = null;
+                this.editingProject = null;
                 
                 // Initialize totalExpenses for existing vehicles
                 this.vehicles.forEach(vehicle => {
@@ -1145,6 +1168,26 @@
                 return false;
             }
 
+            updateVehicle(vehicleId, data) {
+                const vehicle = this.getVehicleById(vehicleId);
+                if (vehicle) {
+                    Object.assign(vehicle, data);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            updateProject(projectId, data) {
+                const project = this.projects.find(p => p.id === projectId);
+                if (project) {
+                    Object.assign(project, data);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
             addVehicleImage(vehicleId, imageData) {
                 const vehicle = this.getVehicleById(vehicleId);
                 if (vehicle) {
@@ -1292,7 +1335,12 @@
                     <div class="vehicle-profile-image">
                         ${vehicle.profileImage ? `<img src="${vehicle.profileImage}" alt="Vehicle">` : '<span class="material-icons" style="font-size: 80px; color: var(--md-text-medium);">directions_car</span>'}
                     </div>
-                    <div class="vehicle-title">${vehicle.year} ${vehicle.make} ${vehicle.model}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div class="vehicle-title">${vehicle.year} ${vehicle.make} ${vehicle.model}</div>
+                        <button class="btn btn-secondary btn-small" onclick="editVehicle('${vehicleId}')" style="padding: 6px 12px;">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">edit</span>
+                        </button>
+                    </div>
                     ${vehicle.mileage ? `<div class="vehicle-detail">${Number(vehicle.mileage).toLocaleString()} miles</div>` : ''}
                     
                     <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px; background: var(--md-surface-8dp); border-radius: var(--radius-sm);">
@@ -1389,13 +1437,16 @@
                 
                 <div class="vehicle-detail-header">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                        <div>
+                        <div style="flex: 1;">
                             <div class="vehicle-title">${project.title}</div>
                             <div class="vehicle-detail" style="margin-top: 8px;">
                                 <span class="status-badge">${capitalize(project.status)}</span>
                                 <span class="priority-badge priority-${project.priority}">${capitalize(project.priority)}</span>
                             </div>
                         </div>
+                        <button class="btn btn-secondary btn-small" onclick="editProject('${projectId}')" style="padding: 6px 12px;">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">edit</span>
+                        </button>
                     </div>
                     ${project.description ? `<p class="text-secondary" style="margin-bottom: 12px;">${project.description}</p>` : ''}
                     
@@ -1455,10 +1506,6 @@
                         </div>
                     ` : ''}
                 </div>
-                
-                <button class="btn btn-primary" onclick="openPartModal('${projectId}', '${vehicle.id}')" style="width: 100%; margin-top: 16px;">
-                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Add Part
-                </button>
             `;
         }
 
@@ -1517,6 +1564,51 @@
             }
         }
 
+        function editVehicle(vehicleId) {
+            const vehicle = store.getVehicleById(vehicleId);
+            if (!vehicle) return;
+            
+            // Set editing mode
+            store.editingVehicle = vehicleId;
+            
+            // Populate form fields
+            document.getElementById('make').value = vehicle.make;
+            document.getElementById('model').value = vehicle.model;
+            document.getElementById('year').value = vehicle.year;
+            document.getElementById('mileage').value = vehicle.mileage || '';
+            
+            // Update modal title
+            document.querySelector('#vehicleModal .modal-title').textContent = 'Edit Vehicle';
+            
+            // Open modal
+            openModal('vehicleModal');
+        }
+
+        function editProject(projectId) {
+            const project = store.projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            // Set editing mode
+            store.editingProject = projectId;
+            
+            // Populate form fields
+            updateProjectVehicleSelect();
+            const vehicleSelect = document.getElementById('projectVehicle');
+            vehicleSelect.value = project.vehicleId;
+            vehicleSelect.setAttribute('readonly', 'readonly'); // Can't change vehicle when editing
+            vehicleSelect.style.opacity = '0.6';
+            vehicleSelect.style.pointerEvents = 'none';
+            document.getElementById('projectTitle').value = project.title;
+            document.getElementById('projectDesc').value = project.description || '';
+            document.getElementById('projectPriority').value = project.priority;
+            
+            // Update modal title
+            document.querySelector('#projectModal .modal-title').textContent = 'Edit Project';
+            
+            // Open modal
+            openModal('projectModal');
+        }
+
         function confirmDeleteVehicle(vehicleId) {
             const vehicle = store.getVehicleById(vehicleId);
             if (!vehicle) return;
@@ -1556,15 +1648,29 @@
         function selectVehicleImages(vehicleId) {
             const input = document.getElementById('imageInput');
             input.onchange = (e) => {
-                Array.from(e.target.files).forEach(file => {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+                
+                let loadedCount = 0;
+                const totalFiles = files.length;
+                
+                files.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         store.addVehicleImage(vehicleId, event.target.result);
-                        showVehicleDetail(vehicleId);
-                        showToast('Image added successfully!');
+                        loadedCount++;
+                        
+                        // Only refresh once after all images are loaded
+                        if (loadedCount === totalFiles) {
+                            showVehicleDetail(vehicleId);
+                            showToast(`${totalFiles} image${totalFiles > 1 ? 's' : ''} added successfully!`);
+                        }
                     };
                     reader.readAsDataURL(file);
                 });
+                
+                // Reset input so same file can be selected again
+                input.value = '';
             };
             input.click();
         }
@@ -1732,9 +1838,10 @@
                 openPartModal(store.currentProject, store.currentVehicle);
             } else if (store.currentTab === 'garage') {
                 if (store.currentVehicle) {
-                    document.getElementById('projectVehicle').value = store.currentVehicle;
+                    // In vehicle detail - add project to this vehicle (auto-selected)
                     openModal('projectModal');
                 } else {
+                    // In garage list - add new vehicle
                     openModal('vehicleModal');
                 }
             } else if (store.currentTab === 'projects') {
@@ -1746,48 +1853,118 @@
         });
 
         function openModal(id) {
-            if (id === 'projectModal' && store.currentVehicle) {
+            // Don't override values when editing
+            if (id === 'projectModal' && store.currentVehicle && !store.editingProject) {
                 updateProjectVehicleSelect();
-                document.getElementById('projectVehicle').value = store.currentVehicle;
+                const vehicleSelect = document.getElementById('projectVehicle');
+                vehicleSelect.value = store.currentVehicle;
+                // Make readonly instead of disabled for iOS compatibility
+                vehicleSelect.setAttribute('readonly', 'readonly');
+                vehicleSelect.style.opacity = '0.6';
+                vehicleSelect.style.pointerEvents = 'none';
+            }
+            if (id === 'projectModal' && !store.currentVehicle && !store.editingProject) {
+                // Enable the select when adding from Projects tab
+                const vehicleSelect = document.getElementById('projectVehicle');
+                vehicleSelect.removeAttribute('readonly');
+                vehicleSelect.style.opacity = '1';
+                vehicleSelect.style.pointerEvents = 'auto';
             }
             document.getElementById(id).classList.add('active');
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
+            
+            // Reset modal titles
+            if (id === 'vehicleModal') {
+                document.querySelector('#vehicleModal .modal-title').textContent = 'Add Vehicle';
+                store.editingVehicle = null;
+            }
+            
+            if (id === 'projectModal') {
+                document.querySelector('#projectModal .modal-title').textContent = 'Add Project';
+                const vehicleSelect = document.getElementById('projectVehicle');
+                vehicleSelect.removeAttribute('readonly');
+                vehicleSelect.style.opacity = '1';
+                vehicleSelect.style.pointerEvents = 'auto';
+                store.editingProject = null;
+            }
         }
 
         document.getElementById('vehicleForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            store.addVehicle({
+            const data = {
                 make: document.getElementById('make').value,
                 model: document.getElementById('model').value,
                 year: parseInt(document.getElementById('year').value),
                 mileage: document.getElementById('mileage').value || null
-            });
-            closeModal('vehicleModal');
-            e.target.reset();
-            render();
-            showToast('Vehicle added successfully!');
+            };
+            
+            if (store.editingVehicle) {
+                // Update existing vehicle
+                store.updateVehicle(store.editingVehicle, data);
+                closeModal('vehicleModal');
+                e.target.reset();
+                showVehicleDetail(store.editingVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Vehicle updated!');
+                });
+                store.editingVehicle = null;
+            } else {
+                // Add new vehicle
+                store.addVehicle(data);
+                closeModal('vehicleModal');
+                e.target.reset();
+                render();
+                requestAnimationFrame(() => {
+                    showToast('Vehicle added successfully!');
+                });
+            }
         });
 
         document.getElementById('projectForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const vehicleId = document.getElementById('projectVehicle').value;
-            store.addProject({
-                vehicleId: vehicleId,
+            const data = {
                 title: document.getElementById('projectTitle').value,
                 description: document.getElementById('projectDesc').value,
                 priority: document.getElementById('projectPriority').value
-            });
-            closeModal('projectModal');
-            e.target.reset();
-            if (store.currentVehicle) {
-                showVehicleDetail(vehicleId);
+            };
+            
+            if (store.editingProject) {
+                // Update existing project
+                store.updateProject(store.editingProject, data);
+                closeModal('projectModal');
+                e.target.reset();
+                showProjectDetail(store.editingProject);
+                // Use requestAnimationFrame to ensure DOM is updated before showing toast
+                requestAnimationFrame(() => {
+                    showToast('Project updated!');
+                });
+                store.editingProject = null;
             } else {
-                render();
+                // Add new project
+                data.vehicleId = vehicleId;
+                store.addProject(data);
+                closeModal('projectModal');
+                e.target.reset();
+                
+                if (store.currentVehicle) {
+                    // Refresh vehicle detail page to show new project
+                    showVehicleDetail(store.currentVehicle);
+                    // Use requestAnimationFrame to ensure DOM is updated before showing toast
+                    requestAnimationFrame(() => {
+                        showToast('Project added successfully!');
+                    });
+                } else {
+                    // From Projects tab
+                    render();
+                    requestAnimationFrame(() => {
+                        showToast('Project added successfully!');
+                    });
+                }
             }
-            showToast('Project added successfully!');
         });
 
         document.getElementById('partForm').addEventListener('submit', (e) => {
@@ -1800,6 +1977,7 @@
                 partNumber: document.getElementById('partNumber').value,
                 price: parseFloat(document.getElementById('partPrice').value)
             });
+            
             closeModal('partModal');
             e.target.reset();
             
@@ -1809,7 +1987,10 @@
             } else if (store.currentVehicle) {
                 showVehicleDetail(store.currentVehicle);
             }
-            showToast('Part added successfully!');
+            
+            requestAnimationFrame(() => {
+                showToast('Part added successfully!');
+            });
         });
 
         function updateProjectVehicleSelect() {
