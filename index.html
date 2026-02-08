@@ -116,8 +116,10 @@
             padding: var(--spacing-md);
             padding-bottom: calc(108px + env(safe-area-inset-bottom));
             overflow-y: auto;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             background: var(--md-background);
+            position: relative;
         }
 
         .card {
@@ -582,6 +584,22 @@
         .mb-1 { margin-bottom: 8px; }
         .mb-2 { margin-bottom: 16px; }
 
+        .sticky-header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: var(--md-background);
+            padding: 0 0 12px 0;
+            margin-bottom: 16px;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
         .back-btn {
             background: none;
             border: none;
@@ -594,7 +612,6 @@
             gap: 4px;
             cursor: pointer;
             letter-spacing: 0.25px;
-            margin-bottom: var(--spacing-md);
         }
 
         .back-btn:active {
@@ -976,6 +993,7 @@
                 this.sortBy = 'priority';
                 this.editingVehicle = null;
                 this.editingProject = null;
+                this.editingPart = null;
                 
                 // Initialize totalExpenses for existing vehicles
                 this.vehicles.forEach(vehicle => {
@@ -1188,6 +1206,36 @@
                 return false;
             }
 
+            updatePart(partId, data) {
+                const part = this.parts.find(p => p.id === partId);
+                if (part) {
+                    Object.assign(part, data);
+                    // Update vehicle expenses
+                    this.updateVehicleExpenses(part.vehicleId);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            deletePart(partId) {
+                const partIndex = this.parts.findIndex(p => p.id === partId);
+                if (partIndex !== -1) {
+                    const part = this.parts[partIndex];
+                    const vehicleId = part.vehicleId;
+                    
+                    // Delete the part
+                    this.parts.splice(partIndex, 1);
+                    
+                    // Update vehicle expenses
+                    this.updateVehicleExpenses(vehicleId);
+                    
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
             addVehicleImage(vehicleId, imageData) {
                 const vehicle = this.getVehicleById(vehicleId);
                 if (vehicle) {
@@ -1330,7 +1378,9 @@
             `;
             
             content.innerHTML = `
-                <button class="back-btn" onclick="backToGarage()"><span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to Garage</button>
+                <div class="sticky-header">
+                    <button class="back-btn" onclick="backToGarage()"><span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to Garage</button>
+                </div>
                 <div class="vehicle-detail-header">
                     <div class="vehicle-profile-image">
                         ${vehicle.profileImage ? `<img src="${vehicle.profileImage}" alt="Vehicle">` : '<span class="material-icons" style="font-size: 80px; color: var(--md-text-medium);">directions_car</span>'}
@@ -1359,12 +1409,12 @@
                     
                     <div class="vehicle-detail">Total Expenses: <span class="expense-badge ${expenseClass}">$${totalExpenses.toFixed(2)}</span></div>
                     ${imagesHTML}
-                    <div class="action-buttons">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
                         <button class="btn btn-secondary btn-small" onclick="scanOBD('${vehicleId}')">
                             <span class="material-icons" style="font-size: 16px; vertical-align: middle;">search</span> Scan OBD
                         </button>
                         <button class="btn btn-secondary btn-small" onclick="updateProjects('${vehicleId}')">
-                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</span> Update Projects
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</span> Update
                         </button>
                     </div>
                     <button class="btn btn-secondary btn-small" onclick="confirmDeleteVehicle('${vehicleId}')" style="width: 100%; margin-top: 12px; color: var(--md-error); border-color: var(--md-error);">
@@ -1396,12 +1446,20 @@
             const progress = store.calculateProgress(project.checkboxes);
             
             const partsHTML = parts.length > 0 ? parts.map(part => `
-                <div class="part-item">
-                    <div class="part-info">
+                <div class="part-item" style="display: flex; align-items: center; gap: 12px;">
+                    <div class="part-info" style="flex: 1;">
                         <div class="part-name">${part.name}</div>
                         ${part.partNumber ? `<div class="part-number">#${part.partNumber}</div>` : ''}
                     </div>
-                    <div class="part-price">$${parseFloat(part.price).toFixed(2)}</div>
+                    <div class="part-price" style="font-weight: 500;">$${parseFloat(part.price).toFixed(2)}</div>
+                    <div style="display: flex; gap: 4px;">
+                        <button onclick="editPart('${part.id}')" style="background: none; border: none; padding: 6px; cursor: pointer; color: var(--md-text-medium);">
+                            <span class="material-icons" style="font-size: 18px;">edit</span>
+                        </button>
+                        <button onclick="confirmDeletePart('${part.id}')" style="background: none; border: none; padding: 6px; cursor: pointer; color: var(--md-text-medium);">
+                            <span class="material-icons" style="font-size: 18px;">delete</span>
+                        </button>
+                    </div>
                 </div>
             `).join('') : `
                 <div class="empty" style="padding: 40px 20px;">
@@ -1431,9 +1489,11 @@
             };
             
             content.innerHTML = `
-                <button class="back-btn" onclick="backToVehicle()">
-                    <span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to ${vehicle.year} ${vehicle.make} ${vehicle.model}
-                </button>
+                <div class="sticky-header">
+                    <button class="back-btn" onclick="backToVehicle()">
+                        <span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to ${vehicle.year} ${vehicle.make} ${vehicle.model}
+                    </button>
+                </div>
                 
                 <div class="vehicle-detail-header">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
@@ -1609,6 +1669,40 @@
             openModal('projectModal');
         }
 
+        function editPart(partId) {
+            const part = store.parts.find(p => p.id === partId);
+            if (!part) return;
+            
+            // Set editing mode
+            store.editingPart = partId;
+            
+            // Populate form fields
+            document.getElementById('partName').value = part.name;
+            document.getElementById('partNumber').value = part.partNumber || '';
+            document.getElementById('partPrice').value = part.price;
+            document.getElementById('partProjectId').value = part.projectId;
+            
+            // Update modal title
+            document.querySelector('#partModal .modal-title').textContent = 'Edit Part';
+            
+            // Open modal
+            openModal('partModal');
+        }
+
+        function confirmDeletePart(partId) {
+            const part = store.parts.find(p => p.id === partId);
+            if (!part) return;
+            
+            if (confirm(`Delete part "${part.name}"?\n\nThis action cannot be undone.`)) {
+                store.deletePart(partId);
+                // Refresh the current view
+                if (store.currentProject) {
+                    showProjectDetail(store.currentProject);
+                }
+                showToast('Part deleted');
+            }
+        }
+
         function confirmDeleteVehicle(vehicleId) {
             const vehicle = store.getVehicleById(vehicleId);
             if (!vehicle) return;
@@ -1662,8 +1756,13 @@
                         
                         // Only refresh once after all images are loaded
                         if (loadedCount === totalFiles) {
-                            showVehicleDetail(vehicleId);
-                            showToast(`${totalFiles} image${totalFiles > 1 ? 's' : ''} added successfully!`);
+                            // Use requestAnimationFrame to ensure DOM updates properly on iOS
+                            requestAnimationFrame(() => {
+                                showVehicleDetail(vehicleId);
+                                requestAnimationFrame(() => {
+                                    showToast(`${totalFiles} image${totalFiles > 1 ? 's' : ''} added successfully!`);
+                                });
+                            });
                         }
                     };
                     reader.readAsDataURL(file);
@@ -1890,6 +1989,11 @@
                 vehicleSelect.style.pointerEvents = 'auto';
                 store.editingProject = null;
             }
+            
+            if (id === 'partModal') {
+                document.querySelector('#partModal .modal-title').textContent = 'Add Part';
+                store.editingPart = null;
+            }
         }
 
         document.getElementById('vehicleForm').addEventListener('submit', (e) => {
@@ -1970,27 +2074,46 @@
         document.getElementById('partForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const projectId = document.getElementById('partProjectId').value;
-            store.addPart({
-                projectId: projectId,
-                vehicleId: store.currentVehicle,
+            const data = {
                 name: document.getElementById('partName').value,
                 partNumber: document.getElementById('partNumber').value,
                 price: parseFloat(document.getElementById('partPrice').value)
-            });
+            };
             
-            closeModal('partModal');
-            e.target.reset();
-            
-            // Return to project detail if we're viewing a project, otherwise vehicle detail
-            if (store.currentProject) {
-                showProjectDetail(store.currentProject);
-            } else if (store.currentVehicle) {
-                showVehicleDetail(store.currentVehicle);
+            if (store.editingPart) {
+                // Update existing part
+                store.updatePart(store.editingPart, data);
+                closeModal('partModal');
+                e.target.reset();
+                
+                if (store.currentProject) {
+                    showProjectDetail(store.currentProject);
+                }
+                
+                requestAnimationFrame(() => {
+                    showToast('Part updated!');
+                });
+                store.editingPart = null;
+            } else {
+                // Add new part
+                data.projectId = projectId;
+                data.vehicleId = store.currentVehicle;
+                store.addPart(data);
+                
+                closeModal('partModal');
+                e.target.reset();
+                
+                // Return to project detail if we're viewing a project, otherwise vehicle detail
+                if (store.currentProject) {
+                    showProjectDetail(store.currentProject);
+                } else if (store.currentVehicle) {
+                    showVehicleDetail(store.currentVehicle);
+                }
+                
+                requestAnimationFrame(() => {
+                    showToast('Part added successfully!');
+                });
             }
-            
-            requestAnimationFrame(() => {
-                showToast('Part added successfully!');
-            });
         });
 
         function updateProjectVehicleSelect() {
