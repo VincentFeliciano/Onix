@@ -876,19 +876,19 @@
                 <form id="vehicleForm">
                     <div class="form-group">
                         <label class="form-label">MAKE *</label>
-                        <input type="text" class="form-input" id="make" required placeholder="Jeep">
+                        <input type="text" class="form-input" id="make" required placeholder="Tesla">
                     </div>
                     <div class="form-group">
                         <label class="form-label">MODEL *</label>
-                        <input type="text" class="form-input" id="model" required placeholder="Gladiator">
+                        <input type="text" class="form-input" id="model" required placeholder="Model 3">
                     </div>
                     <div class="form-group">
                         <label class="form-label">YEAR *</label>
-                        <input type="number" class="form-input" id="year" required placeholder="2020" min="1900" max="2030">
+                        <input type="number" class="form-input" id="year" required placeholder="2023" min="1900" max="2030">
                     </div>
                     <div class="form-group">
                         <label class="form-label">CURRENT MILEAGE</label>
-                        <input type="number" class="form-input" id="mileage" placeholder="100" min="0">
+                        <input type="number" class="form-input" id="mileage" placeholder="12450" min="0">
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeModal('vehicleModal')">Cancel</button>
@@ -969,7 +969,213 @@
         </div>
     </div>
 
+    <!-- Decision Log Modal -->
+    <div id="decisionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Decision</h2>
+                <button class="close-btn" onclick="closeModal('decisionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="decisionForm">
+                    <div class="form-group">
+                        <label class="form-label">DECISION TITLE *</label>
+                        <input type="text" class="form-input" id="decisionTitle" required placeholder="Swapped carb for EFI">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">REASONING *</label>
+                        <textarea class="form-textarea" id="decisionReasoning" required placeholder="Better drivability and fuel economy" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DATE</label>
+                        <input type="date" class="form-input" id="decisionDate">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('decisionModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Log Modal -->
+    <div id="timeLogModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Time</h2>
+                <button class="close-btn" onclick="closeModal('timeLogModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="timeLogForm">
+                    <div class="form-group">
+                        <label class="form-label">TASK *</label>
+                        <input type="text" class="form-input" id="timeTask" required placeholder="Engine teardown">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">HOURS *</label>
+                        <input type="number" class="form-input" id="timeHours" required placeholder="4.5" step="0.5" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">PHASE</label>
+                        <select class="form-select" id="timePhase">
+                            <option value="acquisition">Acquisition</option>
+                            <option value="teardown">Teardown</option>
+                            <option value="rust-repair">Rust Repair / Bodywork</option>
+                            <option value="chassis">Chassis & Suspension</option>
+                            <option value="drivetrain">Drivetrain</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="interior">Interior</option>
+                            <option value="paint">Paint</option>
+                            <option value="reassembly">Reassembly</option>
+                            <option value="tuning">Final Tuning</option>
+                            <option value="general" selected>General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">LABOR TYPE *</label>
+                        <select class="form-select" id="timeLaborType" required>
+                            <option value="diy">DIY</option>
+                            <option value="paid">Paid Labor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">HOURLY RATE ($)</label>
+                        <input type="number" class="form-input" id="timeRate" placeholder="75.00" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DATE</label>
+                        <input type="date" class="form-input" id="timeDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NOTES</label>
+                        <textarea class="form-textarea" id="timeNotes" placeholder="Additional details..." rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('timeLogModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subcontractor Modal -->
+    <div id="subcontractorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Subcontractor</h2>
+                <button class="close-btn" onclick="closeModal('subcontractorModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="subcontractorForm">
+                    <div class="form-group">
+                        <label class="form-label">BUSINESS NAME *</label>
+                        <input type="text" class="form-input" id="subName" required placeholder="Joe's Machine Shop">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SPECIALTY *</label>
+                        <select class="form-select" id="subSpecialty" required>
+                            <option value="">Select specialty</option>
+                            <option value="machine-shop">Machine Shop</option>
+                            <option value="body-shop">Body Shop</option>
+                            <option value="upholstery">Upholstery</option>
+                            <option value="chrome-plating">Chrome Plating</option>
+                            <option value="paint">Paint Booth</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="fabrication">Fabrication</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CONTACT INFO</label>
+                        <input type="text" class="form-input" id="subContact" placeholder="Phone or email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SCOPE OF WORK *</label>
+                        <textarea class="form-textarea" id="subScope" required placeholder="Describe the work to be done" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">COST ($)</label>
+                        <input type="number" class="form-input" id="subCost" placeholder="1500.00" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">LEAD TIME</label>
+                        <input type="text" class="form-input" id="subLeadTime" placeholder="2-3 weeks">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">STATUS</label>
+                        <select class="form-select" id="subStatus">
+                            <option value="pending">Pending</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NOTES</label>
+                        <textarea class="form-textarea" id="subNotes" placeholder="Warranty info, special instructions, etc." rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('subcontractorModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div id="documentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Document</h2>
+                <button class="close-btn" onclick="closeModal('documentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="documentForm">
+                    <div class="form-group">
+                        <label class="form-label">DOCUMENT TITLE *</label>
+                        <input type="text" class="form-input" id="docTitle" required placeholder="Vehicle Title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">TYPE *</label>
+                        <select class="form-select" id="docType" required>
+                            <option value="">Select type</option>
+                            <option value="title">Title</option>
+                            <option value="registration">Registration</option>
+                            <option value="insurance">Insurance</option>
+                            <option value="receipt">Receipt</option>
+                            <option value="manual">Manual</option>
+                            <option value="inspection">Inspection</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DATE</label>
+                        <input type="date" class="form-input" id="docDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DOCUMENT IMAGE</label>
+                        <button type="button" class="btn btn-secondary" onclick="selectDocumentImage()" style="width: 100%;">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">photo_camera</span> Take Photo / Select Image
+                        </button>
+                        <div id="docImagePreview" style="margin-top: 12px;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NOTES</label>
+                        <textarea class="form-textarea" id="docNotes" placeholder="Additional information" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('documentModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <input type="file" id="imageInput" class="file-input" accept="image/*" multiple>
+    <input type="file" id="documentImageInput" class="file-input" accept="image/*">
 
     <div id="toast" class="toast"></div>
 
@@ -979,6 +1185,10 @@
                 this.vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
                 this.projects = JSON.parse(localStorage.getItem('projects') || '[]');
                 this.parts = JSON.parse(localStorage.getItem('parts') || '[]');
+                this.decisions = JSON.parse(localStorage.getItem('decisions') || '[]');
+                this.timeLogs = JSON.parse(localStorage.getItem('timeLogs') || '[]');
+                this.subcontractors = JSON.parse(localStorage.getItem('subcontractors') || '[]');
+                this.documents = JSON.parse(localStorage.getItem('documents') || '[]');
                 this.currentTab = 'garage';
                 this.currentVehicle = null;
                 this.currentProject = null;
@@ -986,6 +1196,10 @@
                 this.editingVehicle = null;
                 this.editingProject = null;
                 this.editingPart = null;
+                this.editingDecision = null;
+                this.editingTimeLog = null;
+                this.editingSubcontractor = null;
+                this.editingDocument = null;
                 
                 // Initialize totalExpenses for existing vehicles
                 this.vehicles.forEach(vehicle => {
@@ -1018,6 +1232,10 @@
                 localStorage.setItem('vehicles', JSON.stringify(this.vehicles));
                 localStorage.setItem('projects', JSON.stringify(this.projects));
                 localStorage.setItem('parts', JSON.stringify(this.parts));
+                localStorage.setItem('decisions', JSON.stringify(this.decisions));
+                localStorage.setItem('timeLogs', JSON.stringify(this.timeLogs));
+                localStorage.setItem('subcontractors', JSON.stringify(this.subcontractors));
+                localStorage.setItem('documents', JSON.stringify(this.documents));
             }
 
             addVehicle(data) {
@@ -1247,6 +1465,190 @@
                 }
                 return projects;
             }
+
+            // Decision Log Methods
+            addDecision(data) {
+                const decision = {
+                    id: Date.now().toString(),
+                    vehicleId: data.vehicleId,
+                    title: data.title,
+                    reasoning: data.reasoning,
+                    date: data.date || new Date().toISOString().split('T')[0],
+                    createdAt: Date.now()
+                };
+                this.decisions.push(decision);
+                this.save();
+                return decision;
+            }
+
+            getDecisionsByVehicle(vehicleId) {
+                return this.decisions.filter(d => d.vehicleId === vehicleId);
+            }
+
+            updateDecision(decisionId, data) {
+                const decision = this.decisions.find(d => d.id === decisionId);
+                if (decision) {
+                    Object.assign(decision, data);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteDecision(decisionId) {
+                const index = this.decisions.findIndex(d => d.id === decisionId);
+                if (index !== -1) {
+                    this.decisions.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            // Time Log Methods
+            addTimeLog(data) {
+                const timeLog = {
+                    id: Date.now().toString(),
+                    vehicleId: data.vehicleId,
+                    projectId: data.projectId || null,
+                    task: data.task,
+                    hours: parseFloat(data.hours),
+                    laborType: data.laborType, // 'diy' or 'paid'
+                    rate: data.rate ? parseFloat(data.rate) : 0,
+                    phase: data.phase || 'general',
+                    date: data.date || new Date().toISOString().split('T')[0],
+                    notes: data.notes || '',
+                    createdAt: Date.now()
+                };
+                this.timeLogs.push(timeLog);
+                this.save();
+                return timeLog;
+            }
+
+            getTimeLogsByVehicle(vehicleId) {
+                return this.timeLogs.filter(t => t.vehicleId === vehicleId);
+            }
+
+            getTotalLaborHours(vehicleId) {
+                return this.timeLogs
+                    .filter(t => t.vehicleId === vehicleId)
+                    .reduce((sum, t) => sum + t.hours, 0);
+            }
+
+            getTotalLaborCost(vehicleId) {
+                return this.timeLogs
+                    .filter(t => t.vehicleId === vehicleId)
+                    .reduce((sum, t) => sum + (t.hours * t.rate), 0);
+            }
+
+            updateTimeLog(timeLogId, data) {
+                const timeLog = this.timeLogs.find(t => t.id === timeLogId);
+                if (timeLog) {
+                    Object.assign(timeLog, data);
+                    if (data.hours) timeLog.hours = parseFloat(data.hours);
+                    if (data.rate) timeLog.rate = parseFloat(data.rate);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteTimeLog(timeLogId) {
+                const index = this.timeLogs.findIndex(t => t.id === timeLogId);
+                if (index !== -1) {
+                    this.timeLogs.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            // Subcontractor Methods
+            addSubcontractor(data) {
+                const subcontractor = {
+                    id: Date.now().toString(),
+                    vehicleId: data.vehicleId,
+                    name: data.name,
+                    specialty: data.specialty,
+                    contact: data.contact || '',
+                    scopeOfWork: data.scopeOfWork,
+                    cost: data.cost ? parseFloat(data.cost) : 0,
+                    leadTime: data.leadTime || '',
+                    status: data.status || 'pending', // pending, in-progress, completed
+                    notes: data.notes || '',
+                    images: data.images || [],
+                    createdAt: Date.now()
+                };
+                this.subcontractors.push(subcontractor);
+                this.save();
+                return subcontractor;
+            }
+
+            getSubcontractorsByVehicle(vehicleId) {
+                return this.subcontractors.filter(s => s.vehicleId === vehicleId);
+            }
+
+            updateSubcontractor(subcontractorId, data) {
+                const subcontractor = this.subcontractors.find(s => s.id === subcontractorId);
+                if (subcontractor) {
+                    Object.assign(subcontractor, data);
+                    if (data.cost) subcontractor.cost = parseFloat(data.cost);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteSubcontractor(subcontractorId) {
+                const index = this.subcontractors.findIndex(s => s.id === subcontractorId);
+                if (index !== -1) {
+                    this.subcontractors.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            // Document Methods
+            addDocument(data) {
+                const document = {
+                    id: Date.now().toString(),
+                    vehicleId: data.vehicleId,
+                    title: data.title,
+                    type: data.type, // title, registration, insurance, receipt, manual, other
+                    date: data.date || new Date().toISOString().split('T')[0],
+                    notes: data.notes || '',
+                    image: data.image || null,
+                    createdAt: Date.now()
+                };
+                this.documents.push(document);
+                this.save();
+                return document;
+            }
+
+            getDocumentsByVehicle(vehicleId) {
+                return this.documents.filter(d => d.vehicleId === vehicleId);
+            }
+
+            updateDocument(documentId, data) {
+                const document = this.documents.find(d => d.id === documentId);
+                if (document) {
+                    Object.assign(document, data);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteDocument(documentId) {
+                const index = this.documents.findIndex(d => d.id === documentId);
+                if (index !== -1) {
+                    this.documents.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
         }
 
         const store = new Store();
@@ -1294,6 +1696,196 @@
                 `;
             }).join('');
             content.innerHTML = html;
+        }
+
+        function renderDecisions(vehicleId) {
+            const decisions = store.getDecisionsByVehicle(vehicleId);
+            if (decisions.length === 0) {
+                return `
+                    <div class="card" onclick="openDecisionModal('${vehicleId}')" style="cursor: pointer;">
+                        <p class="text-secondary" style="text-align: center;">
+                            <span class="material-icons" style="font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5;">lightbulb</span>
+                            No decisions logged yet. Tap to add one.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            return decisions.map(d => `
+                <div class="card no-click">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: var(--md-text-high); margin-bottom: 4px;">${d.title}</div>
+                            <div style="font-size: 13px; color: var(--md-text-medium);">${d.reasoning}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="icon-btn" onclick="editDecision('${d.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">edit</span>
+                            </button>
+                            <button class="icon-btn" onclick="deleteDecisionConfirm('${d.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--md-text-disabled);">${d.date}</div>
+                </div>
+            `).join('') + `
+                <button class="btn btn-secondary btn-small" onclick="openDecisionModal('${vehicleId}')" style="width: 100%; margin-top: 8px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Log Decision
+                </button>
+            `;
+        }
+
+        function renderTimeLogs(vehicleId) {
+            const timeLogs = store.getTimeLogsByVehicle(vehicleId);
+            const totalHours = store.getTotalLaborHours(vehicleId);
+            const totalCost = store.getTotalLaborCost(vehicleId);
+            
+            if (timeLogs.length === 0) {
+                return `
+                    <div class="card" onclick="openTimeLogModal('${vehicleId}')" style="cursor: pointer;">
+                        <p class="text-secondary" style="text-align: center;">
+                            <span class="material-icons" style="font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5;">schedule</span>
+                            No time logged yet. Tap to add.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="card no-click" style="background: var(--md-surface-4dp);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+                        <div>
+                            <div style="font-size: 24px; font-weight: 500; color: var(--md-secondary);">${totalHours.toFixed(1)}</div>
+                            <div style="font-size: 12px; color: var(--md-text-medium);">Total Hours</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: 500; color: var(--md-secondary);">$${totalCost.toFixed(2)}</div>
+                            <div style="font-size: 12px; color: var(--md-text-medium);">Labor Cost</div>
+                        </div>
+                    </div>
+                </div>
+                ${timeLogs.map(t => `
+                    <div class="card no-click">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 500; color: var(--md-text-high); margin-bottom: 4px;">${t.task}</div>
+                                <div style="font-size: 13px; color: var(--md-text-medium); margin-bottom: 4px;">
+                                    <span class="material-icons" style="font-size: 14px; vertical-align: middle;">schedule</span> ${t.hours}h
+                                    ${t.phase !== 'general' ? ` • ${capitalize(t.phase.replace('-', ' '))}` : ''}
+                                </div>
+                                <div style="font-size: 12px; color: var(--md-text-medium);">
+                                    ${t.laborType === 'diy' ? 'DIY' : 'Paid'}${t.rate > 0 ? ` • $${t.rate}/h = $${(t.hours * t.rate).toFixed(2)}` : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="icon-btn" onclick="editTimeLog('${t.id}')" style="background: transparent;">
+                                    <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">edit</span>
+                                </button>
+                                <button class="icon-btn" onclick="deleteTimeLogConfirm('${t.id}')" style="background: transparent;">
+                                    <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--md-text-disabled);">${t.date}</div>
+                    </div>
+                `).join('')}
+                <button class="btn btn-secondary btn-small" onclick="openTimeLogModal('${vehicleId}')" style="width: 100%; margin-top: 8px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Log Time
+                </button>
+            `;
+        }
+
+        function renderSubcontractors(vehicleId) {
+            const subcontractors = store.getSubcontractorsByVehicle(vehicleId);
+            if (subcontractors.length === 0) {
+                return `
+                    <div class="card" onclick="openSubcontractorModal('${vehicleId}')" style="cursor: pointer;">
+                        <p class="text-secondary" style="text-align: center;">
+                            <span class="material-icons" style="font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5;">engineering</span>
+                            No subcontractors yet. Tap to add.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            return subcontractors.map(s => `
+                <div class="card no-click">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: var(--md-text-high); margin-bottom: 4px;">${s.name}</div>
+                            <div style="font-size: 13px; color: var(--md-text-medium); margin-bottom: 4px;">
+                                ${capitalize(s.specialty.replace('-', ' '))}
+                            </div>
+                            <div style="font-size: 13px; color: var(--md-text-medium); margin-bottom: 8px;">${s.scopeOfWork}</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px;">
+                                ${s.cost > 0 ? `<span style="color: var(--md-secondary);">$${s.cost.toFixed(2)}</span>` : ''}
+                                ${s.leadTime ? `<span style="color: var(--md-text-disabled);">• ${s.leadTime}</span>` : ''}
+                                <span class="status-badge">${capitalize(s.status.replace('-', ' '))}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="icon-btn" onclick="editSubcontractor('${s.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">edit</span>
+                            </button>
+                            <button class="icon-btn" onclick="deleteSubcontractorConfirm('${s.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') + `
+                <button class="btn btn-secondary btn-small" onclick="openSubcontractorModal('${vehicleId}')" style="width: 100%; margin-top: 8px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Add Subcontractor
+                </button>
+            `;
+        }
+
+        function renderDocuments(vehicleId) {
+            const documents = store.getDocumentsByVehicle(vehicleId);
+            if (documents.length === 0) {
+                return `
+                    <div class="card" onclick="openDocumentModal('${vehicleId}')" style="cursor: pointer;">
+                        <p class="text-secondary" style="text-align: center;">
+                            <span class="material-icons" style="font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5;">description</span>
+                            No documents yet. Tap to add.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            return documents.map(d => `
+                <div class="card no-click">
+                    <div style="display: flex; gap: 12px; align-items: start;">
+                        ${d.image ? `
+                            <img src="${d.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                        ` : `
+                            <div style="width: 60px; height: 60px; background: var(--md-surface-8dp); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <span class="material-icons" style="font-size: 24px; color: var(--md-text-disabled);">description</span>
+                            </div>
+                        `}
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 500; color: var(--md-text-high); margin-bottom: 4px;">${d.title}</div>
+                            <div style="font-size: 13px; color: var(--md-text-medium); margin-bottom: 4px;">
+                                ${capitalize(d.type)} • ${d.date}
+                            </div>
+                            ${d.notes ? `<div style="font-size: 12px; color: var(--md-text-disabled);">${d.notes}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                            <button class="icon-btn" onclick="editDocument('${d.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">edit</span>
+                            </button>
+                            <button class="icon-btn" onclick="deleteDocumentConfirm('${d.id}')" style="background: transparent;">
+                                <span class="material-icons" style="font-size: 18px; color: var(--md-text-medium);">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') + `
+                <button class="btn btn-secondary btn-small" onclick="openDocumentModal('${vehicleId}')" style="width: 100%; margin-top: 8px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Add Document
+                </button>
+            `;
         }
 
         function showVehicleDetail(vehicleId) {
@@ -1421,6 +2013,34 @@
                     <button class="sort-btn ${store.sortBy === 'date' ? 'active' : ''}" onclick="setSortBy('date')">By Date</button>
                 </div>
                 ${projectsHTML}
+                
+                <!-- Decision Log Section -->
+                <div class="section-title" style="margin-top: 24px;">
+                    <span class="material-icons">lightbulb</span>
+                    Decision Log
+                </div>
+                ${renderDecisions(vehicleId)}
+                
+                <!-- Time Tracking Section -->
+                <div class="section-title" style="margin-top: 24px;">
+                    <span class="material-icons">schedule</span>
+                    Time Tracking
+                </div>
+                ${renderTimeLogs(vehicleId)}
+                
+                <!-- Subcontractors Section -->
+                <div class="section-title" style="margin-top: 24px;">
+                    <span class="material-icons">engineering</span>
+                    Subcontractors
+                </div>
+                ${renderSubcontractors(vehicleId)}
+                
+                <!-- Documents Section -->
+                <div class="section-title" style="margin-top: 24px;">
+                    <span class="material-icons">description</span>
+                    Documents
+                </div>
+                ${renderDocuments(vehicleId)}
             `;
         }
 
@@ -1990,6 +2610,28 @@
                 document.querySelector('#partModal .modal-title').textContent = 'Add Part';
                 store.editingPart = null;
             }
+            
+            if (id === 'decisionModal') {
+                document.querySelector('#decisionModal .modal-title').textContent = 'Log Decision';
+                store.editingDecision = null;
+            }
+            
+            if (id === 'timeLogModal') {
+                document.querySelector('#timeLogModal .modal-title').textContent = 'Log Time';
+                store.editingTimeLog = null;
+            }
+            
+            if (id === 'subcontractorModal') {
+                document.querySelector('#subcontractorModal .modal-title').textContent = 'Add Subcontractor';
+                store.editingSubcontractor = null;
+            }
+            
+            if (id === 'documentModal') {
+                document.querySelector('#documentModal .modal-title').textContent = 'Add Document';
+                store.editingDocument = null;
+                documentImageData = null;
+                document.getElementById('docImagePreview').innerHTML = '';
+            }
         }
 
         document.getElementById('vehicleForm').addEventListener('submit', (e) => {
@@ -2112,10 +2754,287 @@
             }
         });
 
+        // Decision Form Handler
+        document.getElementById('decisionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                vehicleId: store.currentVehicle,
+                title: document.getElementById('decisionTitle').value,
+                reasoning: document.getElementById('decisionReasoning').value,
+                date: document.getElementById('decisionDate').value || new Date().toISOString().split('T')[0]
+            };
+
+            if (store.editingDecision) {
+                store.updateDecision(store.editingDecision, data);
+                closeModal('decisionModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Decision updated!');
+                });
+                store.editingDecision = null;
+            } else {
+                store.addDecision(data);
+                closeModal('decisionModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Decision logged!');
+                });
+            }
+        });
+
+        // Time Log Form Handler
+        document.getElementById('timeLogForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                vehicleId: store.currentVehicle,
+                task: document.getElementById('timeTask').value,
+                hours: document.getElementById('timeHours').value,
+                phase: document.getElementById('timePhase').value,
+                laborType: document.getElementById('timeLaborType').value,
+                rate: document.getElementById('timeRate').value || 0,
+                date: document.getElementById('timeDate').value || new Date().toISOString().split('T')[0],
+                notes: document.getElementById('timeNotes').value
+            };
+
+            if (store.editingTimeLog) {
+                store.updateTimeLog(store.editingTimeLog, data);
+                closeModal('timeLogModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Time log updated!');
+                });
+                store.editingTimeLog = null;
+            } else {
+                store.addTimeLog(data);
+                closeModal('timeLogModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Time logged!');
+                });
+            }
+        });
+
+        // Subcontractor Form Handler
+        document.getElementById('subcontractorForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                vehicleId: store.currentVehicle,
+                name: document.getElementById('subName').value,
+                specialty: document.getElementById('subSpecialty').value,
+                contact: document.getElementById('subContact').value,
+                scopeOfWork: document.getElementById('subScope').value,
+                cost: document.getElementById('subCost').value || 0,
+                leadTime: document.getElementById('subLeadTime').value,
+                status: document.getElementById('subStatus').value,
+                notes: document.getElementById('subNotes').value
+            };
+
+            if (store.editingSubcontractor) {
+                store.updateSubcontractor(store.editingSubcontractor, data);
+                closeModal('subcontractorModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Subcontractor updated!');
+                });
+                store.editingSubcontractor = null;
+            } else {
+                store.addSubcontractor(data);
+                closeModal('subcontractorModal');
+                e.target.reset();
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Subcontractor added!');
+                });
+            }
+        });
+
+        // Document Form Handler
+        let documentImageData = null;
+        document.getElementById('documentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                vehicleId: store.currentVehicle,
+                title: document.getElementById('docTitle').value,
+                type: document.getElementById('docType').value,
+                date: document.getElementById('docDate').value || new Date().toISOString().split('T')[0],
+                notes: document.getElementById('docNotes').value,
+                image: documentImageData
+            };
+
+            if (store.editingDocument) {
+                store.updateDocument(store.editingDocument, data);
+                closeModal('documentModal');
+                e.target.reset();
+                documentImageData = null;
+                document.getElementById('docImagePreview').innerHTML = '';
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Document updated!');
+                });
+                store.editingDocument = null;
+            } else {
+                store.addDocument(data);
+                closeModal('documentModal');
+                e.target.reset();
+                documentImageData = null;
+                document.getElementById('docImagePreview').innerHTML = '';
+                showVehicleDetail(store.currentVehicle);
+                requestAnimationFrame(() => {
+                    showToast('Document added!');
+                });
+            }
+        });
+
         function updateProjectVehicleSelect() {
             const select = document.getElementById('projectVehicle');
             select.innerHTML = '<option value="">Select a vehicle</option>' + 
                 store.vehicles.map(v => `<option value="${v.id}">${v.year} ${v.make} ${v.model}</option>`).join('');
+        }
+
+        // Decision Functions
+        function openDecisionModal(vehicleId) {
+            document.getElementById('decisionModal').classList.add('active');
+            document.getElementById('decisionDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function editDecision(decisionId) {
+            const decision = store.decisions.find(d => d.id === decisionId);
+            if (decision) {
+                store.editingDecision = decisionId;
+                document.getElementById('decisionTitle').value = decision.title;
+                document.getElementById('decisionReasoning').value = decision.reasoning;
+                document.getElementById('decisionDate').value = decision.date;
+                document.querySelector('#decisionModal .modal-title').textContent = 'Edit Decision';
+                document.getElementById('decisionModal').classList.add('active');
+            }
+        }
+
+        function deleteDecisionConfirm(decisionId) {
+            const decision = store.decisions.find(d => d.id === decisionId);
+            if (decision && confirm(`Delete decision "${decision.title}"?`)) {
+                store.deleteDecision(decisionId);
+                showVehicleDetail(store.currentVehicle);
+                showToast('Decision deleted');
+            }
+        }
+
+        // Time Log Functions
+        function openTimeLogModal(vehicleId) {
+            document.getElementById('timeLogModal').classList.add('active');
+            document.getElementById('timeDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function editTimeLog(timeLogId) {
+            const timeLog = store.timeLogs.find(t => t.id === timeLogId);
+            if (timeLog) {
+                store.editingTimeLog = timeLogId;
+                document.getElementById('timeTask').value = timeLog.task;
+                document.getElementById('timeHours').value = timeLog.hours;
+                document.getElementById('timePhase').value = timeLog.phase;
+                document.getElementById('timeLaborType').value = timeLog.laborType;
+                document.getElementById('timeRate').value = timeLog.rate;
+                document.getElementById('timeDate').value = timeLog.date;
+                document.getElementById('timeNotes').value = timeLog.notes;
+                document.querySelector('#timeLogModal .modal-title').textContent = 'Edit Time Log';
+                document.getElementById('timeLogModal').classList.add('active');
+            }
+        }
+
+        function deleteTimeLogConfirm(timeLogId) {
+            const timeLog = store.timeLogs.find(t => t.id === timeLogId);
+            if (timeLog && confirm(`Delete time log for "${timeLog.task}"?`)) {
+                store.deleteTimeLog(timeLogId);
+                showVehicleDetail(store.currentVehicle);
+                showToast('Time log deleted');
+            }
+        }
+
+        // Subcontractor Functions
+        function openSubcontractorModal(vehicleId) {
+            document.getElementById('subcontractorModal').classList.add('active');
+        }
+
+        function editSubcontractor(subcontractorId) {
+            const sub = store.subcontractors.find(s => s.id === subcontractorId);
+            if (sub) {
+                store.editingSubcontractor = subcontractorId;
+                document.getElementById('subName').value = sub.name;
+                document.getElementById('subSpecialty').value = sub.specialty;
+                document.getElementById('subContact').value = sub.contact;
+                document.getElementById('subScope').value = sub.scopeOfWork;
+                document.getElementById('subCost').value = sub.cost;
+                document.getElementById('subLeadTime').value = sub.leadTime;
+                document.getElementById('subStatus').value = sub.status;
+                document.getElementById('subNotes').value = sub.notes;
+                document.querySelector('#subcontractorModal .modal-title').textContent = 'Edit Subcontractor';
+                document.getElementById('subcontractorModal').classList.add('active');
+            }
+        }
+
+        function deleteSubcontractorConfirm(subcontractorId) {
+            const sub = store.subcontractors.find(s => s.id === subcontractorId);
+            if (sub && confirm(`Delete subcontractor "${sub.name}"?`)) {
+                store.deleteSubcontractor(subcontractorId);
+                showVehicleDetail(store.currentVehicle);
+                showToast('Subcontractor deleted');
+            }
+        }
+
+        // Document Functions
+        function openDocumentModal(vehicleId) {
+            document.getElementById('documentModal').classList.add('active');
+            document.getElementById('docDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function editDocument(documentId) {
+            const doc = store.documents.find(d => d.id === documentId);
+            if (doc) {
+                store.editingDocument = documentId;
+                document.getElementById('docTitle').value = doc.title;
+                document.getElementById('docType').value = doc.type;
+                document.getElementById('docDate').value = doc.date;
+                document.getElementById('docNotes').value = doc.notes;
+                if (doc.image) {
+                    documentImageData = doc.image;
+                    document.getElementById('docImagePreview').innerHTML = `
+                        <img src="${doc.image}" style="width: 100%; max-width: 200px; border-radius: 8px;">
+                    `;
+                }
+                document.querySelector('#documentModal .modal-title').textContent = 'Edit Document';
+                document.getElementById('documentModal').classList.add('active');
+            }
+        }
+
+        function deleteDocumentConfirm(documentId) {
+            const doc = store.documents.find(d => d.id === documentId);
+            if (doc && confirm(`Delete document "${doc.title}"?`)) {
+                store.deleteDocument(documentId);
+                showVehicleDetail(store.currentVehicle);
+                showToast('Document deleted');
+            }
+        }
+
+        function selectDocumentImage() {
+            const input = document.getElementById('documentImageInput');
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        documentImageData = event.target.result;
+                        document.getElementById('docImagePreview').innerHTML = `
+                            <img src="${documentImageData}" style="width: 100%; max-width: 200px; border-radius: 8px;">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
         }
 
         function showToast(message) {
