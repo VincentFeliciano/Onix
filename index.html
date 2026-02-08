@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ONIX">
+    <title>ONIX - Automotive Management</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --md-background: #121212;
+            --md-surface: #121212;
+            --md-surface-1dp: #1E1E1E;
+            --md-surface-2dp: #232323;
+            --md-surface-3dp: #252525;
+            --md-surface-4dp: #272727;
+            --md-surface-6dp: #2C2C2C;
+            --md-surface-8dp: #2E2E2E;
+            --md-surface-12dp: #333333;
+            --md-surface-16dp: #353535;
+            --md-surface-24dp: #383838;
+            --md-primary: #BB86FC;
+            --md-primary-variant: #3700B3;
+            --md-secondary: #03DAC6;
+            --md-secondary-variant: #018786;
+            --md-error: #CF6679;
+            --md-text-high: rgba(255, 255, 255, 0.87);
+            --md-text-medium: rgba(255, 255, 255, 0.60);
+            --md-text-disabled: rgba(255, 255, 255, 0.38);
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --elevation-0: none;
+            --elevation-1: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+            --elevation-2: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+            --elevation-4: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+            --elevation-8: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--md-background);
+            color: var(--md-text-high);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 0;
+        }
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: 'liga';
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 0;
+        }
+
+        .app-bar {
+            background: var(--md-surface-4dp);
+            padding: 12px var(--spacing-md);
+            padding-top: max(12px, env(safe-area-inset-top));
+            display: flex;
+            align-items: center;
+            box-shadow: var(--elevation-4);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            height: 28px;
+            width: auto;
+        }
+
+        .content {
+            flex: 1;
+            padding: var(--spacing-md);
+            padding-bottom: calc(88px + env(safe-area-inset-bottom));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--md-background);
+        }
+
+        .card {
+            background: var(--md-surface-1dp);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--elevation-1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+            box-shadow: var(--elevation-8);
+        }
+
+        .card.no-click {
+            cursor: default;
+        }
+
+        .card.no-click:active {
+            transform: none;
+            box-shadow: var(--elevation-1);
+        }
+
+        .vehicle-card {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-start;
+        }
+
+        .vehicle-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--md-surface-8dp);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vehicle-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .vehicle-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--md-text-high);
+            letter-spacing: 0.15px;
+        }
+
+        .vehicle-detail {
+            font-size: 14px;
+            color: var(--md-text-medium);
+            margin-bottom: 8px;
+            letter-spacing: 0.25px;
+        }
+
+        .vehicle-stats {
+            font-size: 12px;
+            color: var(--md-text-medium);
+            letter-spacing: 0.4px;
+        }
+
+        .expense-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--md-surface-8dp);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--md-secondary);
+        }
+
+        .expense-badge.high {
+            background: rgba(207, 102, 121, 0.15);
+            color: var(--md-error);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 500;
+            flex: 1;
+            color: var(--md-text-high);
+            letter-spacing: 0.15px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            background: rgba(187, 134, 252, 0.12);
+            color: var(--md-primary);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-left: 4px;
+        }
+
+        .priority-low { background: rgba(3, 218, 198, 0.12); color: var(--md-secondary); }
+        .priority-medium { background: rgba(187, 134, 252, 0.12); color: var(--md-primary); }
+        .priority-high { background: rgba(255, 179, 0, 0.15); color: #FFB300; }
+        .priority-urgent { background: rgba(207, 102, 121, 0.15); color: var(--md-error); }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--md-surface-8dp);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 12px 0 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--md-secondary);
+            transition: width 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--md-text-medium);
+            font-weight: 500;
+            letter-spacing: 0.4px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--md-text-high);
+            letter-spacing: 0.15px;
+        }
+
+        .empty-text {
+            color: var(--md-text-medium);
+            font-size: 14px;
+            line-height: 1.6;
+            letter-spacing: 0.25px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1.25px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            min-height: 36px;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: var(--md-primary);
+            color: #000000;
+            box-shadow: var(--elevation-2);
+        }
+
+        .btn-primary:active {
+            box-shadow: var(--elevation-8);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--md-primary);
+            border: 1px solid var(--md-primary);
+        }
+
+        .btn-secondary:active {
+            background: rgba(187, 134, 252, 0.08);
+        }
+
+        .btn-small {
+            padding: 6px 16px;
+            font-size: 13px;
+            min-height: 28px;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: calc(88px + env(safe-area-inset-bottom));
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: var(--md-secondary);
+            color: #000000;
+            border: none;
+            border-radius: 16px;
+            font-size: 24px;
+            box-shadow: var(--elevation-8);
+            z-index: 89;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .fab .material-icons {
+            font-size: 28px;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--md-surface-8dp);
+            display: flex;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: var(--elevation-8);
+            z-index: 100;
+            height: calc(56px + env(safe-area-inset-bottom));
+        }
+
+        .nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            color: var(--md-text-medium);
+            font-size: 12px;
+            font-weight: 500;
+            touch-action: manipulation;
+            letter-spacing: 0.4px;
+            transition: color 0.2s;
+        }
+
+        .nav-btn.active {
+            color: var(--md-primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            align-items: flex-end;
+            padding: 0;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--md-surface-4dp);
+            width: 100%;
+            max-height: 90vh;
+            border-radius: 16px 16px 0 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--md-surface-4dp);
+            z-index: 1;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-text-high);
+            letter-spacing: 0.15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--md-text-medium);
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .close-btn:active {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .modal-body {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--md-text-medium);
+            letter-spacing: 0.4px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 16px 12px;
+            border: none;
+            border-bottom: 1px solid var(--md-text-disabled);
+            border-radius: 4px 4px 0 0;
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--md-surface-8dp);
+            color: var(--md-text-high);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-bottom-color: var(--md-primary);
+            border-bottom-width: 2px;
+            background: var(--md-surface-12dp);
+        }
+
+        .form-textarea {
+            border: 1px solid var(--md-text-disabled);
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .form-textarea:focus {
+            border: 2px solid var(--md-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: calc(140px + env(safe-area-inset-bottom));
+            left: 16px;
+            right: 16px;
+            background: var(--md-surface-24dp);
+            color: var(--md-text-high);
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--elevation-8);
+            transform: translateY(200%);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s, visibility 0s 0.3s;
+            z-index: 300;
+            font-size: 14px;
+            letter-spacing: 0.25px;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s;
+            pointer-events: auto;
+        }
+
+        .hidden { display: none !important; }
+        .text-secondary { color: var(--md-text-medium); }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--md-primary);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            letter-spacing: 0.25px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .back-btn:active {
+            opacity: 0.7;
+        }
+
+        .vehicle-detail-header {
+            background: var(--md-surface-2dp);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--elevation-1);
+        }
+
+        .vehicle-profile-image {
+            width: 100%;
+            height: 200px;
+            background: var(--md-surface-8dp);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            margin-bottom: var(--spacing-md);
+            overflow: hidden;
+        }
+
+        .vehicle-profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: var(--md-surface-8dp);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item.add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--md-text-medium);
+            border: 2px dashed var(--md-text-disabled);
+        }
+
+        .delete-image-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            z-index: 1;
+        }
+
+        .gallery-item:hover .delete-image-btn {
+            opacity: 1;
+        }
+
+        .delete-image-btn .material-icons {
+            font-size: 16px;
+            color: white;
+        }
+
+        .delete-image-btn:active {
+            background: rgba(207, 102, 121, 0.9);
+        }
+
+        @media (hover: hover) {
+            .delete-image-btn {
+                opacity: 0;
+            }
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-text-medium);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.25px;
+            text-transform: uppercase;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .parts-list {
+            margin-top: 12px;
+        }
+
+        .part-item {
+            background: var(--md-surface-8dp);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .part-info {
+            flex: 1;
+        }
+
+        .part-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-text-high);
+            margin-bottom: 4px;
+        }
+
+        .part-number {
+            font-size: 12px;
+            color: var(--md-text-medium);
+        }
+
+        .part-price {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--md-secondary);
+        }
+
+        .sort-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sort-btn {
+            padding: 6px 12px;
+            background: var(--md-surface-6dp);
+            color: var(--md-text-medium);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .sort-btn.active {
+            background: var(--md-primary);
+            color: #000000;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Material Design Checkbox Styling */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--md-text-medium);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        input[type="checkbox"]:checked {
+            background: var(--md-primary);
+            border-color: var(--md-primary);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000000;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: var(--md-primary);
+        }
+
+        body {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="app-bar">
+            <svg class="logo" width="110" height="33" viewBox="0 0 110 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M52.0156 25.75C50.7135 26.1979 49.2969 26.4219 47.7656 26.4219C46.2344 26.4219 44.8177 26.1979 43.5156 25.75C42.2135 25.2917 41.099 24.6771 40.1719 23.9062C39.2552 23.125 38.4688 22.2188 37.8125 21.1875C37.1562 20.1562 36.6719 19.0625 36.3594 17.9062C36.0469 16.7396 35.8906 15.5469 35.8906 14.3281C35.8906 13.1094 36.0469 11.9271 36.3594 10.7812C36.6719 9.625 37.151 8.54167 37.7969 7.53125C38.4531 6.51042 39.2396 5.61979 40.1562 4.85938C41.0833 4.08854 42.1979 3.48438 43.5 3.04688C44.8125 2.59896 46.2344 2.375 47.7656 2.375C49.2969 2.375 50.7135 2.59896 52.0156 3.04688C53.3281 3.48438 54.4427 4.08854 55.3594 4.85938C56.2865 5.61979 57.0729 6.51042 57.7188 7.53125C58.375 8.54167 58.8594 9.625 59.1719 10.7812C59.4844 11.9271 59.6406 13.1094 59.6406 14.3281C59.6406 15.5469 59.4844 16.7396 59.1719 17.9062C58.8594 19.0625 58.375 20.1562 57.7188 21.1875C57.0625 22.2188 56.2708 23.125 55.3438 23.9062C54.4271 24.6771 53.3177 25.2917 52.0156 25.75ZM44.9375 23.0938C45.8021 23.4375 46.7448 23.6094 47.7656 23.6094C48.7865 23.6094 49.7292 23.4375 50.5938 23.0938C51.4583 22.7396 52.1979 22.2708 52.8125 21.6875C53.4271 21.0938 53.9479 20.4062 54.375 19.625C54.8125 18.8333 55.1354 18 55.3438 17.125C55.5521 16.2396 55.6562 15.3281 55.6562 14.3906C55.6562 13.2135 55.4844 12.0833 55.1406 11C54.8073 9.91667 54.3229 8.9375 53.6875 8.0625C53.0521 7.1875 52.2188 6.48958 51.1875 5.96875C50.1667 5.4375 49.026 5.17188 47.7656 5.17188C46.5052 5.17188 45.3594 5.4375 44.3281 5.96875C43.3073 6.48958 42.4792 7.1875 41.8438 8.0625C41.2083 8.9375 40.7188 9.91667 40.375 11C40.0417 12.0833 39.875 13.2135 39.875 14.3906C39.875 15.3281 39.9792 16.2396 40.1875 17.125C40.3958 18 40.7135 18.8333 41.1406 19.625C41.5781 20.4062 42.1042 21.0938 42.7188 21.6875C43.3333 22.2708 44.0729 22.7396 44.9375 23.0938ZM80.7656 26.125C79.7552 26.0417 78.8438 26 78.0312 26C77.5 26 76.9219 26.0208 76.2969 26.0625C75.6719 26.1042 75.2604 26.125 75.0625 26.125C74.7083 26.125 74.5312 25.7292 74.5312 24.9375V15.5781C74.5312 14.224 74.3125 13.2344 73.875 12.6094C73.4375 11.974 72.8646 11.6562 72.1562 11.6562C71.4271 11.6562 70.625 11.8646 69.75 12.2812C68.8854 12.6875 68.0729 13.2083 67.3125 13.8438V22.0781C67.3125 22.2344 67.3177 22.3594 67.3281 22.4531C67.349 22.5365 67.3854 22.6354 67.4375 22.75C67.5 22.8646 67.6042 22.9531 67.75 23.0156C67.8958 23.0677 68.0833 23.0938 68.3125 23.0938C68.7083 23.0938 69.0469 23.1562 69.3281 23.2812C69.6094 23.4062 69.75 23.5938 69.75 23.8438C69.75 25.0625 69.5781 25.8229 69.2344 26.125C68.599 26.0417 67.4062 26 65.6562 26C63.9062 26 62.6406 26.0417 61.8594 26.125C61.5156 25.8125 61.3438 25.0521 61.3438 23.8438C61.3438 23.5938 61.4844 23.4062 61.7656 23.2812C62.0469 23.1562 62.3854 23.0938 62.7812 23.0938C63.1875 23.0938 63.4531 23.0104 63.5781 22.8438C63.7031 22.6667 63.7656 22.4219 63.7656 22.1094V13.7188C63.7656 13.1667 63.6042 12.776 63.2812 12.5469C62.9688 12.3177 62.3594 12.1823 61.4531 12.1406C61.3177 12.1094 61.2292 12.0417 61.1875 11.9375C61.1562 11.8333 61.1406 11.6094 61.1406 11.2656C61.1406 10.7344 61.1979 10.2656 61.3125 9.85938C61.4271 9.45312 61.5417 9.21875 61.6562 9.15625C62.3438 9.27083 63.0156 9.32812 63.6719 9.32812C64.1406 9.32812 64.6354 9.30208 65.1562 9.25C65.6771 9.1875 65.9531 9.15625 65.9844 9.15625C66.349 9.15625 66.5833 9.25 66.6875 9.4375C66.8021 9.61458 66.8594 10.0312 66.8594 10.6875C66.8594 10.7604 66.8542 10.8958 66.8438 11.0938C66.8438 11.2812 66.8438 11.4323 66.8438 11.5469C67.7396 10.7552 68.7552 10.1146 69.8906 9.625C71.026 9.13542 72.1198 8.89062 73.1719 8.89062C74.6302 8.89062 75.8125 9.40625 76.7188 10.4375C77.625 11.4688 78.0781 13.0885 78.0781 15.2969V22.0156C78.0781 22.6927 78.3385 23.0521 78.8594 23.0938C78.9635 23.1042 79.099 23.1146 79.2656 23.125C79.4427 23.1354 79.5781 23.1458 79.6719 23.1562C79.776 23.1667 79.901 23.1823 80.0469 23.2031C80.1927 23.2135 80.3073 23.2292 80.3906 23.25C80.474 23.2604 80.5677 23.2812 80.6719 23.3125C80.7865 23.3333 80.875 23.3594 80.9375 23.3906C81 23.4219 81.0573 23.4583 81.1094 23.5C81.1719 23.5417 81.2135 23.5938 81.2344 23.6562C81.2656 23.7083 81.2812 23.7708 81.2812 23.8438C81.2812 25.0521 81.1094 25.8125 80.7656 26.125ZM85.8438 6.54688C85.5938 6.54688 85.3385 6.52604 85.0781 6.48438C84.8177 6.43229 84.5312 6.34375 84.2188 6.21875C83.9167 6.09375 83.6667 5.89583 83.4688 5.625C83.2812 5.35417 83.1875 5.03125 83.1875 4.65625C83.1875 3.375 84.0521 2.73438 85.7812 2.73438C86.2708 2.73438 86.6823 2.79688 87.0156 2.92188C87.3594 3.04688 87.6094 3.21354 87.7656 3.42188C87.9323 3.63021 88.0469 3.83333 88.1094 4.03125C88.1719 4.22917 88.2031 4.44271 88.2031 4.67188C88.2031 5.14062 88.0573 5.52604 87.7656 5.82812C87.474 6.13021 87.1615 6.32812 86.8281 6.42188C86.5052 6.50521 86.1771 6.54688 85.8438 6.54688ZM88.4219 10.6875V22.0781C88.4219 22.2344 88.4271 22.3594 88.4375 22.4531C88.4583 22.5365 88.4948 22.6354 88.5469 22.75C88.6094 22.8646 88.7135 22.9531 88.8594 23.0156C89.0052 23.0677 89.1927 23.0938 89.4219 23.0938C89.8177 23.0938 90.1562 23.1562 90.4375 23.2812C90.7188 23.4062 90.8594 23.5938 90.8594 23.8438C90.8594 25.0625 90.6875 25.8229 90.3438 26.125C89.4062 26.0417 88.2604 26 86.9062 26C85.5 26 84.1875 26.0417 82.9688 26.125C82.625 25.8125 82.4531 25.0521 82.4531 23.8438C82.4531 23.5938 82.5938 23.4062 82.875 23.2812C83.1562 23.1562 83.4948 23.0938 83.8906 23.0938C84.2969 23.0938 84.5625 23.0104 84.6875 22.8438C84.8125 22.6667 84.875 22.4219 84.875 22.1094V13.7188C84.875 13.1667 84.7135 12.776 84.3906 12.5469C84.0781 12.3177 83.4688 12.1823 82.5625 12.1406C82.4271 12.1094 82.3385 12.0417 82.2969 11.9375C82.2656 11.8333 82.25 11.6094 82.25 11.2656C82.25 10.7344 82.3073 10.2656 82.4219 9.85938C82.5365 9.45312 82.651 9.21875 82.7656 9.15625C83.5677 9.27083 84.3438 9.32812 85.0938 9.32812C85.5938 9.32812 86.1198 9.30208 86.6719 9.25C87.224 9.1875 87.5156 9.15625 87.5469 9.15625C87.9115 9.15625 88.1458 9.25 88.25 9.4375C88.3646 9.61458 88.4219 10.0312 88.4219 10.6875ZM99.2344 13.1094L101.109 15.4844L103.141 13.1094C103.307 12.901 103.391 12.6927 103.391 12.4844C103.391 12.3281 103.323 12.2188 103.188 12.1562C103.062 12.0938 102.917 12.0625 102.75 12.0625C102.594 12.0521 102.448 12 102.312 11.9062C102.188 11.8021 102.125 11.651 102.125 11.4531C102.125 11.0365 102.182 10.5469 102.297 9.98438C102.422 9.41146 102.547 9.04688 102.672 8.89062C103.536 9.16146 104.505 9.29688 105.578 9.29688C106.88 9.29688 107.953 9.16146 108.797 8.89062C109.203 9.08854 109.406 9.58333 109.406 10.375C109.406 11.0104 109.292 11.4583 109.062 11.7188C108.844 11.9688 108.474 12.0938 107.953 12.0938C107.641 12.0938 107.359 12.1458 107.109 12.25C106.87 12.3542 106.698 12.4583 106.594 12.5625C106.49 12.6667 106.359 12.8125 106.203 13C106.193 13.0104 106.182 13.026 106.172 13.0469C106.161 13.0573 106.151 13.0677 106.141 13.0781L102.547 17.2969L106.438 22.1875C106.448 22.1979 106.479 22.2396 106.531 22.3125C106.594 22.3854 106.63 22.4323 106.641 22.4531C106.661 22.4635 106.703 22.5052 106.766 22.5781C106.839 22.651 106.891 22.6979 106.922 22.7188C106.953 22.7396 107.005 22.7812 107.078 22.8438C107.161 22.8958 107.229 22.9375 107.281 22.9688C107.344 22.9896 107.417 23.0208 107.5 23.0625C107.594 23.0938 107.682 23.1198 107.766 23.1406C107.859 23.151 107.958 23.1667 108.062 23.1875C108.177 23.1979 108.297 23.2031 108.422 23.2031C108.88 23.2031 109.214 23.3125 109.422 23.5312C109.641 23.7396 109.75 24.0938 109.75 24.5938C109.75 24.9583 109.698 25.3125 109.594 25.6562C109.49 26 109.354 26.25 109.188 26.4062C108.198 26.1354 107.141 26 106.016 26C104.599 26 103.396 26.1354 102.406 26.4062C102.24 26.2604 102.083 25.901 101.938 25.3281C101.792 24.7552 101.719 24.2604 101.719 23.8438C101.719 23.6562 101.792 23.5156 101.938 23.4219C102.094 23.3281 102.266 23.276 102.453 23.2656C102.641 23.2448 102.807 23.2083 102.953 23.1562C103.109 23.1042 103.188 23.026 103.188 22.9219C103.198 22.7448 103.089 22.5104 102.859 22.2188L100.688 19.4688L98.3438 22.2188C98.1146 22.5104 98.0052 22.7448 98.0156 22.9219C98.0156 23.026 98.0885 23.1042 98.2344 23.1562C98.3906 23.2083 98.5625 23.2448 98.75 23.2656C98.9375 23.276 99.1042 23.3281 99.25 23.4219C99.4062 23.5156 99.4844 23.6562 99.4844 23.8438C99.4844 24.2604 99.4115 24.7552 99.2656 25.3281C99.1198 25.901 98.9635 26.2604 98.7969 26.4062C97.8594 26.1354 96.8385 26 95.7344 26C94.6302 26 93.5833 26.1354 92.5938 26.4062C92.4271 26.25 92.2917 26 92.1875 25.6562C92.0833 25.3125 92.0312 24.9583 92.0312 24.5938C92.0312 24.0938 92.1354 23.7396 92.3438 23.5312C92.5625 23.3125 92.901 23.2031 93.3594 23.2031C93.4844 23.2031 93.599 23.1979 93.7031 23.1875C93.8177 23.1667 93.9167 23.151 94 23.1406C94.0938 23.1198 94.1823 23.0938 94.2656 23.0625C94.3594 23.0208 94.4323 22.9896 94.4844 22.9688C94.5469 22.9375 94.6146 22.8958 94.6875 22.8438C94.7708 22.7812 94.8281 22.7396 94.8594 22.7188C94.8906 22.6979 94.9375 22.651 95 22.5781C95.0729 22.5052 95.1146 22.4635 95.125 22.4531C95.1458 22.4323 95.1823 22.3854 95.2344 22.3125C95.2969 22.2396 95.3333 22.1979 95.3438 22.1875L99.25 17.6406L95.6406 13.0781C95.3385 12.7031 95.0885 12.4583 94.8906 12.3438C94.599 12.1771 94.2448 12.0938 93.8281 12.0938C93.3073 12.0938 92.9323 11.9688 92.7031 11.7188C92.4844 11.4583 92.375 11.0104 92.375 10.375C92.375 9.58333 92.5781 9.08854 92.9844 8.89062C93.8281 9.16146 94.901 9.29688 96.2031 9.29688C97.5573 9.29688 98.724 9.16146 99.7031 8.89062C99.8281 9.04688 99.9479 9.41146 100.062 9.98438C100.188 10.5469 100.25 11.0365 100.25 11.4531C100.25 11.651 100.182 11.8021 100.047 11.9062C99.9219 12 99.776 12.0521 99.6094 12.0625C99.4531 12.0625 99.3073 12.0938 99.1719 12.1562C99.0469 12.2188 98.9844 12.3281 98.9844 12.4844C98.9844 12.6927 99.0677 12.901 99.2344 13.1094Z" fill="white"/>
+                <path d="M14.5045 0L29 8.09202V24.2761L14.5045 32.3681L0 24.2761V8.09202L14.5045 0Z" fill="white"/>
+                <path d="M14.7597 16.143L0.157959 24.218L0.15796 8.06787L14.7597 16.143Z" fill="#5C5C5C"/>
+                <path d="M29 8.09202L14.5046 16.1019L14.5046 0L29 8.09202Z" fill="#5C5C5C"/>
+                <path d="M29 24.2761L14.317 16.1411L29 8.09203L29 24.2761Z" fill="#272727"/>
+                <path d="M14.5045 32.3681L14.4241 16.0197L28.9999 24.2761L14.5045 32.3681Z" fill="#5C5C5C"/>
+                <path d="M14.5046 7.22942L22.7508 11.83V21.031L14.5046 25.6316L6.25836 21.031V11.83L14.5046 7.22942Z" fill="#272727"/>
+                <path d="M14.5045 25.6316V7.22942L22.7511 11.4603V21.031L14.5045 25.6316Z" fill="black"/>
+            </svg>
+        </div>
+
+        <div id="content" class="content"></div>
+
+        <button id="fab" class="fab"><span class="material-icons">add</span></button>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-tab="garage">
+                <span class="material-icons nav-icon">directions_car</span>
+                <span>Garage</span>
+            </button>
+            <button class="nav-btn" data-tab="projects">
+                <span class="material-icons nav-icon">assignment</span>
+                <span>Projects</span>
+            </button>
+            <button class="nav-btn" data-tab="diagnostics">
+                <span class="material-icons nav-icon">build</span>
+                <span>Diagnostics</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <span class="material-icons nav-icon">person</span>
+                <span>Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Vehicle</h2>
+                <button class="close-btn" onclick="closeModal('vehicleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm">
+                    <div class="form-group">
+                        <label class="form-label">MAKE *</label>
+                        <input type="text" class="form-input" id="make" required placeholder="Tesla">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">MODEL *</label>
+                        <input type="text" class="form-input" id="model" required placeholder="Model 3">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">YEAR *</label>
+                        <input type="number" class="form-input" id="year" required placeholder="2023" min="1900" max="2030">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CURRENT MILEAGE</label>
+                        <input type="number" class="form-input" id="mileage" placeholder="12450" min="0">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('vehicleModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Project</h2>
+                <button class="close-btn" onclick="closeModal('projectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label class="form-label">VEHICLE *</label>
+                        <select class="form-select" id="projectVehicle" required>
+                            <option value="">Select a vehicle</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">PROJECT TITLE *</label>
+                        <input type="text" class="form-input" id="projectTitle" required placeholder="Oil Change">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DESCRIPTION</label>
+                        <textarea class="form-textarea" id="projectDesc" rows="3" placeholder="Project details..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">PRIORITY</label>
+                        <select class="form-select" id="projectPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('projectModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="partModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Part</h2>
+                <button class="close-btn" onclick="closeModal('partModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="partForm">
+                    <input type="hidden" id="partProjectId">
+                    <div class="form-group">
+                        <label class="form-label">PART NAME *</label>
+                        <input type="text" class="form-input" id="partName" required placeholder="Oil Filter">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">PART NUMBER</label>
+                        <input type="text" class="form-input" id="partNumber" placeholder="ACO-012345">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">PRICE *</label>
+                        <input type="number" class="form-input" id="partPrice" required placeholder="29.99" step="0.01" min="0">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('partModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="imageInput" class="file-input" accept="image/*" multiple>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        class Store {
+            constructor() {
+                this.vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
+                this.projects = JSON.parse(localStorage.getItem('projects') || '[]');
+                this.parts = JSON.parse(localStorage.getItem('parts') || '[]');
+                this.currentTab = 'garage';
+                this.currentVehicle = null;
+                this.currentProject = null;
+                this.sortBy = 'priority';
+                
+                // Initialize totalExpenses for existing vehicles
+                this.vehicles.forEach(vehicle => {
+                    if (vehicle.totalExpenses === undefined) {
+                        vehicle.totalExpenses = 0;
+                        this.updateVehicleExpenses(vehicle.id);
+                    }
+                    if (vehicle.runs === undefined) {
+                        vehicle.runs = true;
+                    }
+                });
+                
+                // Initialize checkboxes for existing projects
+                this.projects.forEach(project => {
+                    if (!project.checkboxes) {
+                        project.checkboxes = {
+                            partsOrdered: false,
+                            partsArrived: false,
+                            workStarted: false,
+                            workCompleted: false,
+                            tested: false
+                        };
+                    }
+                });
+                
+                this.save();
+            }
+
+            save() {
+                localStorage.setItem('vehicles', JSON.stringify(this.vehicles));
+                localStorage.setItem('projects', JSON.stringify(this.projects));
+                localStorage.setItem('parts', JSON.stringify(this.parts));
+            }
+
+            addVehicle(data) {
+                const vehicle = {
+                    id: Date.now().toString(),
+                    createdAt: Date.now(),
+                    images: [],
+                    profileImage: null,
+                    totalExpenses: 0,
+                    runs: true, // Default to runs
+                    ...data
+                };
+                this.vehicles.push(vehicle);
+                this.save();
+                return vehicle;
+            }
+
+            addProject(data) {
+                const project = {
+                    id: Date.now().toString(),
+                    createdAt: Date.now(),
+                    status: 'planned',
+                    progress: 0,
+                    checkboxes: {
+                        partsOrdered: false,
+                        partsArrived: false,
+                        workStarted: false,
+                        workCompleted: false,
+                        tested: false
+                    },
+                    ...data
+                };
+                this.projects.push(project);
+                this.save();
+                return project;
+            }
+
+            addPart(data) {
+                const part = {
+                    id: Date.now().toString(),
+                    ...data
+                };
+                this.parts.push(part);
+                this.updateVehicleExpenses(data.vehicleId);
+                this.save();
+                return part;
+            }
+
+            getVehicleById(id) {
+                return this.vehicles.find(v => v.id === id);
+            }
+
+            getProjectsByVehicle(vehicleId) {
+                return this.projects.filter(p => p.vehicleId === vehicleId);
+            }
+
+            getPartsByProject(projectId) {
+                return this.parts.filter(p => p.projectId === projectId);
+            }
+
+            updateVehicleExpenses(vehicleId) {
+                const projects = this.getProjectsByVehicle(vehicleId);
+                let total = 0;
+                projects.forEach(project => {
+                    const parts = this.getPartsByProject(project.id);
+                    parts.forEach(part => {
+                        total += parseFloat(part.price || 0);
+                    });
+                });
+                const vehicle = this.getVehicleById(vehicleId);
+                if (vehicle) {
+                    vehicle.totalExpenses = total;
+                    this.save();
+                }
+            }
+
+            calculateProgress(checkboxes) {
+                if (!checkboxes) return 0;
+                const checks = Object.values(checkboxes);
+                const completed = checks.filter(c => c === true).length;
+                return Math.round((completed / checks.length) * 100);
+            }
+
+            updateProjectProgress(projectId) {
+                const project = this.projects.find(p => p.id === projectId);
+                if (project && project.checkboxes) {
+                    project.progress = this.calculateProgress(project.checkboxes);
+                    this.save();
+                }
+            }
+
+            toggleVehicleRuns(vehicleId) {
+                const vehicle = this.getVehicleById(vehicleId);
+                if (vehicle) {
+                    vehicle.runs = !vehicle.runs;
+                    this.save();
+                }
+            }
+
+            deleteVehicleImage(vehicleId, imageIndex) {
+                const vehicle = this.getVehicleById(vehicleId);
+                if (vehicle && vehicle.images) {
+                    const deletedImage = vehicle.images[imageIndex];
+                    vehicle.images.splice(imageIndex, 1);
+                    
+                    // If we deleted the profile image, set a new one
+                    if (vehicle.profileImage === deletedImage) {
+                        vehicle.profileImage = vehicle.images.length > 0 ? vehicle.images[0] : null;
+                    }
+                    
+                    this.save();
+                }
+            }
+
+            deleteProject(projectId) {
+                const projectIndex = this.projects.findIndex(p => p.id === projectId);
+                if (projectIndex !== -1) {
+                    const project = this.projects[projectIndex];
+                    const vehicleId = project.vehicleId;
+                    
+                    // Delete all parts associated with this project
+                    this.parts = this.parts.filter(part => part.projectId !== projectId);
+                    
+                    // Delete the project
+                    this.projects.splice(projectIndex, 1);
+                    
+                    // Update vehicle expenses
+                    this.updateVehicleExpenses(vehicleId);
+                    
+                    this.save();
+                    return vehicleId;
+                }
+                return null;
+            }
+
+            deleteVehicle(vehicleId) {
+                const vehicleIndex = this.vehicles.findIndex(v => v.id === vehicleId);
+                if (vehicleIndex !== -1) {
+                    // Get all projects for this vehicle
+                    const projectIds = this.projects
+                        .filter(p => p.vehicleId === vehicleId)
+                        .map(p => p.id);
+                    
+                    // Delete all parts for all projects of this vehicle
+                    projectIds.forEach(projectId => {
+                        this.parts = this.parts.filter(part => part.projectId !== projectId);
+                    });
+                    
+                    // Delete all projects for this vehicle
+                    this.projects = this.projects.filter(p => p.vehicleId !== vehicleId);
+                    
+                    // Delete the vehicle
+                    this.vehicles.splice(vehicleIndex, 1);
+                    
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            addVehicleImage(vehicleId, imageData) {
+                const vehicle = this.getVehicleById(vehicleId);
+                if (vehicle) {
+                    if (!vehicle.images) vehicle.images = [];
+                    vehicle.images.push(imageData);
+                    if (!vehicle.profileImage) {
+                        vehicle.profileImage = imageData;
+                    }
+                    this.save();
+                }
+            }
+
+            sortProjects(projects) {
+                const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+                if (this.sortBy === 'priority') {
+                    return projects.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+                }
+                return projects;
+            }
+        }
+
+        const store = new Store();
+
+        function renderGarage() {
+            const content = document.getElementById('content');
+            
+            if (store.vehicles.length === 0) {
+                content.innerHTML = `
+                    <div class="empty">
+                        <span class="material-icons empty-icon" style="font-size: 64px;">directions_car</span>
+                        <h2 class="empty-title">No Vehicles Yet</h2>
+                        <p class="empty-text">Add your first vehicle to start tracking projects and maintenance.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = store.vehicles.map(v => {
+                const projectCount = store.projects.filter(p => p.vehicleId === v.id).length;
+                const totalExpenses = v.totalExpenses || 0;
+                const expenseClass = totalExpenses > 1000 ? 'high' : '';
+                const runsStatus = v.runs !== false ? 'Runs' : 'Not Running';
+                const runsIcon = v.runs !== false ? 'check_circle' : 'cancel';
+                const runsColor = v.runs !== false ? 'var(--md-secondary)' : 'var(--md-error)';
+                return `
+                    <div class="card vehicle-card" onclick="showVehicleDetail('${v.id}')">
+                        <div class="vehicle-icon">
+                            ${v.profileImage ? `<img src="${v.profileImage}" alt="Vehicle" class="vehicle-image">` : '<span class="material-icons" style="font-size: 40px; color: var(--md-text-medium);">directions_car</span>'}
+                        </div>
+                        <div class="vehicle-info">
+                            <div class="vehicle-title">${v.year} ${v.make} ${v.model}</div>
+                            ${v.mileage ? `<div class="vehicle-detail">${Number(v.mileage).toLocaleString()} miles</div>` : ''}
+                            <div class="vehicle-stats">
+                                <span style="display: flex; align-items: center; gap: 4px; color: ${runsColor}; font-weight: 500;">
+                                    <span class="material-icons" style="font-size: 16px;">${runsIcon}</span>
+                                    ${runsStatus}
+                                </span>
+                                ● ${projectCount} project${projectCount !== 1 ? 's' : ''}<br>
+                                <span class="expense-badge ${expenseClass}">$${totalExpenses.toFixed(2)} expenses</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            content.innerHTML = html;
+        }
+
+        function showVehicleDetail(vehicleId) {
+            store.currentVehicle = vehicleId;
+            store.currentProject = null;
+            const vehicle = store.getVehicleById(vehicleId);
+            const projects = store.sortProjects(store.getProjectsByVehicle(vehicleId));
+            const content = document.getElementById('content');
+            const totalExpenses = vehicle.totalExpenses || 0;
+            const expenseClass = totalExpenses > 1000 ? 'high' : '';
+            
+            const projectsHTML = projects.length === 0 ? `
+                <div class="empty" style="padding: 40px 20px;">
+                    <span class="material-icons empty-icon" style="font-size: 48px;">assignment</span>
+                    <h2 class="empty-title" style="font-size: 18px;">No Projects Yet</h2>
+                    <p class="empty-text">Create a project for this vehicle using the + button.</p>
+                </div>
+            ` : projects.map(p => {
+                const parts = store.getPartsByProject(p.id);
+                const projectTotal = parts.reduce((sum, part) => sum + parseFloat(part.price || 0), 0);
+                const progress = store.calculateProgress(p.checkboxes);
+                return `
+                    <div class="card" onclick="showProjectDetail('${p.id}')">
+                        <div class="project-header">
+                            <div class="project-title">${p.title}</div>
+                            <div>
+                                <span class="status-badge">${capitalize(p.status)}</span>
+                                <span class="priority-badge priority-${p.priority}">${capitalize(p.priority)}</span>
+                            </div>
+                        </div>
+                        ${p.description ? `<p class="text-secondary mb-1">${p.description}</p>` : ''}
+                        ${parts.length > 0 ? `
+                            <div style="margin: 12px 0;">
+                                <div class="text-secondary" style="font-size: 12px; margin-bottom: 8px;">
+                                    <span class="material-icons" style="font-size: 14px; vertical-align: middle;">build</span> ${parts.length} part${parts.length !== 1 ? 's' : ''}
+                                </div>
+                                ${parts.slice(0, 3).map(part => `
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--md-text-medium); margin-bottom: 4px;">
+                                        <span>${part.name}${part.partNumber ? ` (#${part.partNumber})` : ''}</span>
+                                        <span style="color: var(--md-text-high);">$${parseFloat(part.price).toFixed(2)}</span>
+                                    </div>
+                                `).join('')}
+                                ${parts.length > 3 ? `<div style="font-size: 12px; color: var(--md-text-disabled); margin-top: 4px;">+ ${parts.length - 3} more</div>` : ''}
+                                <div style="text-align: right; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--md-surface-8dp);">
+                                    <span style="font-size: 14px; font-weight: 500; color: var(--md-secondary);">Total: $${projectTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <p class="text-secondary" style="font-size: 13px; margin: 8px 0;">No parts added yet</p>
+                        `}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <p class="progress-text">${progress}% complete</p>
+                    </div>
+                `;
+            }).join('');
+
+            const imagesHTML = vehicle.images && vehicle.images.length > 0 ? `
+                <div class="image-gallery">
+                    ${vehicle.images.map((img, index) => `
+                        <div class="gallery-item">
+                            <img src="${img}" alt="Vehicle image">
+                            <button class="delete-image-btn" onclick="event.stopPropagation(); deleteVehicleImage('${vehicleId}', ${index})">
+                                <span class="material-icons">close</span>
+                            </button>
+                        </div>
+                    `).join('')}
+                    ${vehicle.images.length < 8 ? `<div class="gallery-item add" onclick="selectVehicleImages('${vehicleId}')"><span class="material-icons" style="font-size: 32px;">add</span></div>` : ''}
+                </div>
+            ` : `
+                <button class="btn btn-secondary btn-small" onclick="selectVehicleImages('${vehicleId}')" style="width: 100%; margin-top: 12px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">photo_camera</span> Add Photos
+                </button>
+            `;
+            
+            content.innerHTML = `
+                <button class="back-btn" onclick="backToGarage()"><span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to Garage</button>
+                <div class="vehicle-detail-header">
+                    <div class="vehicle-profile-image">
+                        ${vehicle.profileImage ? `<img src="${vehicle.profileImage}" alt="Vehicle">` : '<span class="material-icons" style="font-size: 80px; color: var(--md-text-medium);">directions_car</span>'}
+                    </div>
+                    <div class="vehicle-title">${vehicle.year} ${vehicle.make} ${vehicle.model}</div>
+                    ${vehicle.mileage ? `<div class="vehicle-detail">${Number(vehicle.mileage).toLocaleString()} miles</div>` : ''}
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px; background: var(--md-surface-8dp); border-radius: var(--radius-sm);">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex: 1;">
+                            <input type="checkbox" ${vehicle.runs !== false ? 'checked' : ''} 
+                                   onchange="toggleVehicleRuns('${vehicleId}')" 
+                                   style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="font-size: 15px; font-weight: 500; color: var(--md-text-high);">
+                                Vehicle Runs
+                            </span>
+                        </label>
+                        <span class="material-icons" style="font-size: 28px; color: ${vehicle.runs !== false ? 'var(--md-secondary)' : 'var(--md-error)'};">
+                            ${vehicle.runs !== false ? 'check_circle' : 'cancel'}
+                        </span>
+                    </div>
+                    
+                    <div class="vehicle-detail">Total Expenses: <span class="expense-badge ${expenseClass}">$${totalExpenses.toFixed(2)}</span></div>
+                    ${imagesHTML}
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary btn-small" onclick="scanOBD('${vehicleId}')">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">search</span> Scan OBD
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="updateProjects('${vehicleId}')">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</span> Update Projects
+                        </button>
+                    </div>
+                    <button class="btn btn-secondary btn-small" onclick="confirmDeleteVehicle('${vehicleId}')" style="width: 100%; margin-top: 12px; color: var(--md-error); border-color: var(--md-error);">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">delete</span> Delete Vehicle
+                    </button>
+                </div>
+                <div class="section-title">
+                    <span class="material-icons">assignment</span>
+                    Projects
+                </div>
+                <div class="sort-buttons">
+                    <button class="sort-btn ${store.sortBy === 'priority' ? 'active' : ''}" onclick="setSortBy('priority')">By Priority</button>
+                    <button class="sort-btn ${store.sortBy === 'date' ? 'active' : ''}" onclick="setSortBy('date')">By Date</button>
+                </div>
+                ${projectsHTML}
+            `;
+        }
+
+        function showProjectDetail(projectId) {
+            store.currentProject = projectId;
+            const project = store.projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            store.currentVehicle = project.vehicleId; // Set for proper navigation
+            const vehicle = store.getVehicleById(project.vehicleId);
+            const parts = store.getPartsByProject(projectId);
+            const projectTotal = parts.reduce((sum, part) => sum + parseFloat(part.price || 0), 0);
+            const content = document.getElementById('content');
+            const progress = store.calculateProgress(project.checkboxes);
+            
+            const partsHTML = parts.length > 0 ? parts.map(part => `
+                <div class="part-item">
+                    <div class="part-info">
+                        <div class="part-name">${part.name}</div>
+                        ${part.partNumber ? `<div class="part-number">#${part.partNumber}</div>` : ''}
+                    </div>
+                    <div class="part-price">$${parseFloat(part.price).toFixed(2)}</div>
+                </div>
+            `).join('') : `
+                <div class="empty" style="padding: 40px 20px;">
+                    <span class="material-icons empty-icon" style="font-size: 48px;">build</span>
+                    <h2 class="empty-title" style="font-size: 18px;">No Parts Yet</h2>
+                    <p class="empty-text">Add parts to track costs for this project.</p>
+                </div>
+            `;
+            
+            // Initialize checkboxes if they don't exist
+            if (!project.checkboxes) {
+                project.checkboxes = {
+                    partsOrdered: false,
+                    partsArrived: false,
+                    workStarted: false,
+                    workCompleted: false,
+                    tested: false
+                };
+            }
+            
+            const checkboxLabels = {
+                partsOrdered: '<span class="material-icons" style="font-size: 18px; vertical-align: middle;">inventory_2</span> Parts Ordered',
+                partsArrived: '<span class="material-icons" style="font-size: 18px; vertical-align: middle;">local_shipping</span> Parts Arrived',
+                workStarted: '<span class="material-icons" style="font-size: 18px; vertical-align: middle;">construction</span> Work Started',
+                workCompleted: '<span class="material-icons" style="font-size: 18px; vertical-align: middle;">done</span> Work Completed',
+                tested: '<span class="material-icons" style="font-size: 18px; vertical-align: middle;">science</span> Tested & Verified'
+            };
+            
+            content.innerHTML = `
+                <button class="back-btn" onclick="backToVehicle()">
+                    <span class="material-icons" style="font-size: 18px;">arrow_back</span> Back to ${vehicle.year} ${vehicle.make} ${vehicle.model}
+                </button>
+                
+                <div class="vehicle-detail-header">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <div class="vehicle-title">${project.title}</div>
+                            <div class="vehicle-detail" style="margin-top: 8px;">
+                                <span class="status-badge">${capitalize(project.status)}</span>
+                                <span class="priority-badge priority-${project.priority}">${capitalize(project.priority)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${project.description ? `<p class="text-secondary" style="margin-bottom: 12px;">${project.description}</p>` : ''}
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; padding: 16px 0; border-top: 1px solid var(--md-surface-8dp); border-bottom: 1px solid var(--md-surface-8dp);">
+                        <div>
+                            <div class="text-secondary" style="font-size: 12px;">Vehicle</div>
+                            <div style="font-size: 14px; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                                <span class="material-icons" style="font-size: 18px;">directions_car</span> ${vehicle.year} ${vehicle.make} ${vehicle.model}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-secondary" style="font-size: 12px;">Total Cost</div>
+                            <div style="font-size: 18px; font-weight: 500; color: var(--md-secondary); margin-top: 4px;">$${projectTotal.toFixed(2)}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 16px 0;">
+                        <div class="section-title" style="margin-bottom: 12px;">
+                            <span class="material-icons">bar_chart</span>
+                            Project Progress (${progress}%)
+                        </div>
+                        <div class="progress-bar" style="margin-bottom: 12px;">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        ${Object.entries(checkboxLabels).map(([key, label]) => `
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 10px; margin-bottom: 8px; background: var(--md-surface-8dp); border-radius: var(--radius-sm); cursor: pointer;">
+                                <input type="checkbox" 
+                                       ${project.checkboxes[key] ? 'checked' : ''} 
+                                       onchange="toggleProjectCheckbox('${projectId}', '${key}')"
+                                       style="width: 20px; height: 20px; cursor: pointer;">
+                                <span style="font-size: 14px; font-weight: 500; color: var(--md-text-high); flex: 1;">${label}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                        <button class="btn btn-secondary btn-small" onclick="changeStatus('${projectId}')">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</span> Status
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="confirmDeleteProject('${projectId}')" style="color: var(--md-error); border-color: var(--md-error);">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle;">delete</span> Delete
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <span class="material-icons">build</span>
+                    Parts List (${parts.length})
+                </div>
+                
+                <div class="parts-list">
+                    ${partsHTML}
+                    ${parts.length > 0 ? `
+                        <div style="background: var(--md-surface-4dp); padding: 12px; border-radius: var(--radius-sm); margin-top: 12px; text-align: right;">
+                            <span style="font-size: 14px; color: var(--md-text-medium);">Project Total: </span>
+                            <span style="font-size: 20px; font-weight: 500; color: var(--md-secondary);">$${projectTotal.toFixed(2)}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <button class="btn btn-primary" onclick="openPartModal('${projectId}', '${vehicle.id}')" style="width: 100%; margin-top: 16px;">
+                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">add</span> Add Part
+                </button>
+            `;
+        }
+
+        function backToVehicle() {
+            if (store.currentVehicle) {
+                showVehicleDetail(store.currentVehicle);
+            } else {
+                render();
+            }
+        }
+
+        function toggleProjectCheckbox(projectId, checkboxKey) {
+            const project = store.projects.find(p => p.id === projectId);
+            if (project && project.checkboxes) {
+                project.checkboxes[checkboxKey] = !project.checkboxes[checkboxKey];
+                store.updateProjectProgress(projectId);
+                showProjectDetail(projectId);
+            }
+        }
+
+        function toggleVehicleRuns(vehicleId) {
+            store.toggleVehicleRuns(vehicleId);
+            showVehicleDetail(vehicleId);
+        }
+
+        function changeStatus(projectId) {
+            const statuses = ['planned', 'in-progress', 'on-hold', 'completed'];
+            const currentProject = store.projects.find(p => p.id === projectId);
+            const currentIndex = statuses.indexOf(currentProject.status);
+            const nextIndex = (currentIndex + 1) % statuses.length;
+            currentProject.status = statuses[nextIndex];
+            store.save();
+            showProjectDetail(projectId);
+            showToast(`Status changed to ${capitalize(statuses[nextIndex])}!`);
+        }
+
+        function confirmDeleteProject(projectId) {
+            const project = store.projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const parts = store.getPartsByProject(projectId);
+            const partsCount = parts.length;
+            
+            let message = `Delete project "${project.title}"?`;
+            if (partsCount > 0) {
+                message += `\n\nThis will also delete ${partsCount} part${partsCount !== 1 ? 's' : ''}.`;
+            }
+            message += '\n\nThis action cannot be undone.';
+            
+            if (confirm(message)) {
+                const vehicleId = store.deleteProject(projectId);
+                if (vehicleId) {
+                    showVehicleDetail(vehicleId);
+                    showToast('Project deleted');
+                }
+            }
+        }
+
+        function confirmDeleteVehicle(vehicleId) {
+            const vehicle = store.getVehicleById(vehicleId);
+            if (!vehicle) return;
+            
+            const projects = store.getProjectsByVehicle(vehicleId);
+            const projectCount = projects.length;
+            
+            // Count all parts across all projects
+            let totalParts = 0;
+            projects.forEach(project => {
+                totalParts += store.getPartsByProject(project.id).length;
+            });
+            
+            let message = `Delete ${vehicle.year} ${vehicle.make} ${vehicle.model}?`;
+            
+            if (projectCount > 0) {
+                message += `\n\nThis will also delete:`;
+                message += `\n• ${projectCount} project${projectCount !== 1 ? 's' : ''}`;
+                if (totalParts > 0) {
+                    message += `\n• ${totalParts} part${totalParts !== 1 ? 's' : ''}`;
+                }
+                if (vehicle.images && vehicle.images.length > 0) {
+                    message += `\n• ${vehicle.images.length} image${vehicle.images.length !== 1 ? 's' : ''}`;
+                }
+            }
+            
+            message += '\n\nThis action cannot be undone.';
+            
+            if (confirm(message)) {
+                if (store.deleteVehicle(vehicleId)) {
+                    backToGarage();
+                    showToast('Vehicle deleted');
+                }
+            }
+        }
+
+        function selectVehicleImages(vehicleId) {
+            const input = document.getElementById('imageInput');
+            input.onchange = (e) => {
+                Array.from(e.target.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        store.addVehicleImage(vehicleId, event.target.result);
+                        showVehicleDetail(vehicleId);
+                        showToast('Image added successfully!');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            };
+            input.click();
+        }
+
+        function deleteVehicleImage(vehicleId, imageIndex) {
+            if (confirm('Delete this image?')) {
+                store.deleteVehicleImage(vehicleId, imageIndex);
+                showVehicleDetail(vehicleId);
+                showToast('Image deleted');
+            }
+        }
+
+        function scanOBD(vehicleId) {
+            showToast('OBD2 scanning coming in Phase 2!');
+        }
+
+        function updateProjects(vehicleId) {
+            showToast('Project updates coming in Phase 2!');
+        }
+
+        function setSortBy(sortType) {
+            store.sortBy = sortType;
+            if (store.currentVehicle) {
+                showVehicleDetail(store.currentVehicle);
+            }
+        }
+
+        function openPartModal(projectId, vehicleId) {
+            store.currentProject = projectId;
+            store.currentVehicle = vehicleId;
+            document.getElementById('partProjectId').value = projectId;
+            openModal('partModal');
+        }
+
+        function backToGarage() {
+            store.currentVehicle = null;
+            store.currentProject = null;
+            renderGarage();
+        }
+
+        function renderProjects() {
+            const content = document.getElementById('content');
+            
+            if (store.projects.length === 0) {
+                content.innerHTML = `
+                    <div class="empty">
+                        <span class="material-icons empty-icon" style="font-size: 64px;">assignment</span>
+                        <h2 class="empty-title">No Projects Yet</h2>
+                        <p class="empty-text">Create your first project to track tasks and expenses.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = store.sortProjects([...store.projects]);
+            const html = sorted.map(p => {
+                const vehicle = store.getVehicleById(p.vehicleId);
+                const vehicleName = vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : 'Unknown';
+                const parts = store.getPartsByProject(p.id);
+                const projectTotal = parts.reduce((sum, part) => sum + parseFloat(part.price || 0), 0);
+                const progress = store.calculateProgress(p.checkboxes);
+                return `
+                    <div class="card" onclick="showProjectDetail('${p.id}')">
+                        <div class="project-header">
+                            <div class="project-title">${p.title}</div>
+                            <div>
+                                <span class="status-badge">${capitalize(p.status)}</span>
+                                <span class="priority-badge priority-${p.priority}">${capitalize(p.priority)}</span>
+                            </div>
+                        </div>
+                        ${p.description ? `<p class="text-secondary mb-1">${p.description}</p>` : ''}
+                        <p class="text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 4px;">
+                            <span class="material-icons" style="font-size: 16px;">directions_car</span> ${vehicleName}
+                        </p>
+                        ${parts.length > 0 ? `<p class="text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 4px;">
+                            <span class="material-icons" style="font-size: 16px;">build</span> ${parts.length} parts ($${projectTotal.toFixed(2)})
+                        </p>` : ''}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <p class="progress-text">${progress}% complete</p>
+                    </div>
+                `;
+            }).join('');
+
+            content.innerHTML = `
+                <div class="sort-buttons">
+                    <button class="sort-btn ${store.sortBy === 'priority' ? 'active' : ''}" onclick="setSortBy('priority')">By Priority</button>
+                    <button class="sort-btn ${store.sortBy === 'date' ? 'active' : ''}" onclick="setSortBy('date')">By Date</button>
+                </div>
+                ${html}
+            `;
+        }
+
+        function renderDiagnostics() {
+            document.getElementById('content').innerHTML = `
+                <div class="card no-click">
+                    <h3 class="mb-1">OBD2 Scanner</h3>
+                    <p class="text-secondary mb-2">Status: Not Connected</p>
+                    <button class="btn btn-primary" onclick="showToast('OBD2 coming in Phase 2!')">Connect</button>
+                </div>
+                <div class="card no-click">
+                    <h3 class="mb-1">Recent Scans</h3>
+                    <p class="text-secondary">No diagnostic history yet.</p>
+                </div>
+            `;
+        }
+
+        function renderProfile() {
+            const totalExpenses = store.vehicles.reduce((sum, v) => sum + (v.totalExpenses || 0), 0);
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card no-click">
+                    <h3 class="mb-1">Overview</h3>
+                    <p style="font-size: 32px; font-weight: 500; margin: 12px 0;">$${totalExpenses.toFixed(2)}</p>
+                    <p class="text-secondary">Total Expenses (2026)</p>
+                </div>
+                <div class="card no-click">
+                    <h3 class="mb-2">Quick Stats</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+                        <div>
+                            <p style="font-size: 28px; font-weight: 500; color: var(--md-primary);">${store.vehicles.length}</p>
+                            <p class="text-secondary" style="font-size: 14px;">Vehicles</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 28px; font-weight: 500; color: var(--md-primary);">${store.projects.length}</p>
+                            <p class="text-secondary" style="font-size: 14px;">Projects</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card no-click">
+                    <h3 class="mb-2">Menu</h3>
+                    <button class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;" onclick="showToast('Expenses coming soon!')">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">bar_chart</span> Expenses
+                    </button>
+                    <button class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;" onclick="showToast('Reminders coming soon!')">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">notifications</span> Reminders
+                    </button>
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Analytics coming soon!')">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">trending_up</span> Analytics
+                    </button>
+                </div>
+            `;
+        }
+
+        function render() {
+            store.currentVehicle = null;
+            store.currentProject = null;
+            const tabs = { garage: renderGarage, projects: renderProjects, diagnostics: renderDiagnostics, profile: renderProfile };
+            tabs[store.currentTab]();
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                store.currentTab = btn.dataset.tab;
+                render();
+            });
+        });
+
+        document.getElementById('fab').addEventListener('click', () => {
+            // If viewing a project detail, add a part to that project
+            if (store.currentProject) {
+                openPartModal(store.currentProject, store.currentVehicle);
+            } else if (store.currentTab === 'garage') {
+                if (store.currentVehicle) {
+                    document.getElementById('projectVehicle').value = store.currentVehicle;
+                    openModal('projectModal');
+                } else {
+                    openModal('vehicleModal');
+                }
+            } else if (store.currentTab === 'projects') {
+                updateProjectVehicleSelect();
+                openModal('projectModal');
+            } else {
+                showToast('Feature coming soon!');
+            }
+        });
+
+        function openModal(id) {
+            if (id === 'projectModal' && store.currentVehicle) {
+                updateProjectVehicleSelect();
+                document.getElementById('projectVehicle').value = store.currentVehicle;
+            }
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        document.getElementById('vehicleForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            store.addVehicle({
+                make: document.getElementById('make').value,
+                model: document.getElementById('model').value,
+                year: parseInt(document.getElementById('year').value),
+                mileage: document.getElementById('mileage').value || null
+            });
+            closeModal('vehicleModal');
+            e.target.reset();
+            render();
+            showToast('Vehicle added successfully!');
+        });
+
+        document.getElementById('projectForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const vehicleId = document.getElementById('projectVehicle').value;
+            store.addProject({
+                vehicleId: vehicleId,
+                title: document.getElementById('projectTitle').value,
+                description: document.getElementById('projectDesc').value,
+                priority: document.getElementById('projectPriority').value
+            });
+            closeModal('projectModal');
+            e.target.reset();
+            if (store.currentVehicle) {
+                showVehicleDetail(vehicleId);
+            } else {
+                render();
+            }
+            showToast('Project added successfully!');
+        });
+
+        document.getElementById('partForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const projectId = document.getElementById('partProjectId').value;
+            store.addPart({
+                projectId: projectId,
+                vehicleId: store.currentVehicle,
+                name: document.getElementById('partName').value,
+                partNumber: document.getElementById('partNumber').value,
+                price: parseFloat(document.getElementById('partPrice').value)
+            });
+            closeModal('partModal');
+            e.target.reset();
+            
+            // Return to project detail if we're viewing a project, otherwise vehicle detail
+            if (store.currentProject) {
+                showProjectDetail(store.currentProject);
+            } else if (store.currentVehicle) {
+                showVehicleDetail(store.currentVehicle);
+            }
+            showToast('Part added successfully!');
+        });
+
+        function updateProjectVehicleSelect() {
+            const select = document.getElementById('projectVehicle');
+            select.innerHTML = '<option value="">Select a vehicle</option>' + 
+                store.vehicles.map(v => `<option value="${v.id}">${v.year} ${v.make} ${v.model}</option>`).join('');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        render();
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal(modal.id);
+            });
+        });
+    </script>
+</body>
+</html>
